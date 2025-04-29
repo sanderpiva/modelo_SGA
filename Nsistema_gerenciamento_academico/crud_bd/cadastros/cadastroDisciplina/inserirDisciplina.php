@@ -7,11 +7,12 @@
     $descricaoDisciplina = $_POST["descricaoDisciplina"];
     $semestre_periodo = $_POST["semestre_periodo"];
     $id_professor = $_POST["Professor_id_professor"];
+    $id_turma = $_POST["id_turma"];
     
     //conexao.php
     include '../conexao.php';
 
-    $sql = "INSERT INTO disciplina VALUES (NULL, '$codigoDisciplina', '$nomeDisciplina', '$carga_horaria', '$professor', '$descricaoDisciplina', '$semestre_periodo', '$id_professor')";
+    $sql = "INSERT INTO disciplina VALUES (NULL, '$codigoDisciplina', '$nomeDisciplina', '$carga_horaria', '$professor', '$descricaoDisciplina', '$semestre_periodo', '$id_professor', '$id_turma')";
 
     if ($conn->query($sql) === TRUE) {
         echo "<p>Dados inseridos com sucesso!</p>";

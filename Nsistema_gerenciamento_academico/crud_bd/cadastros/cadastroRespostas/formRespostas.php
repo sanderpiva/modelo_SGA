@@ -42,7 +42,7 @@ if (isset($_GET['id_respostas']) && !empty($_GET['id_respostas'])) {
 
         <label for="codigoRespostas">Código Respostas:</label>
         <?php if ($isUpdating): ?>
-            <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?php echo htmlspecialchars($respostaData['codigoRespostas']); ?>"> 
+            <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" value="<?php echo htmlspecialchars($respostaData['codigoRespostas']); ?>" required> 
             <input type="hidden" name="id_respostas" value="<?php echo htmlspecialchars($respostaData['id_respostas']); ?>">
         <?php else: ?>
             <input type="text" name="codigoRespostas" id="codigoRespostas" placeholder="" required>
@@ -57,7 +57,7 @@ if (isset($_GET['id_respostas']) && !empty($_GET['id_respostas'])) {
         <div>
             <input type="radio" id="acertouSim" name="acertou" value="1" <?php echo $isUpdating && $respostaData['acertou'] == 1 ? 'checked' : ''; ?> required>
             <label for="acertouSim">Sim</label>
-            <input type="radio" id="acertouNao" name="acertou" value="0" <?php echo $isUpdating && $respostaData['acertou'] == 0 ? 'checked' : ''; ?>>
+            <input type="radio" id="acertouNao" name="acertou" value="0" <?php echo $isUpdating && $respostaData['acertou'] == 0 ? 'checked' : ''; ?> required>
             <label for="acertouNao">Não</label>
         </div>
         <hr>

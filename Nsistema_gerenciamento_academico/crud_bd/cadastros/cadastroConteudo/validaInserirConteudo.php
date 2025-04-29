@@ -17,6 +17,10 @@ if (strlen($_POST["codigoConteudo"]) < 5 || strlen($_POST["codigoConteudo"]) > 2
     $erros .= "Erro: campo 'Código do Conteúdo' deve ter entre 5 e 20 caracteres.<br>";
 }
 
+if (strlen($_POST["tituloConteudo"]) < 5 || strlen($_POST["tituloConteudo"]) > 40) {
+    $erros .= "Erro: campo 'Titulo de Conteúdo' deve ter entre 5 e 40 caracteres.<br>";
+}           
+
 if (strlen($_POST["descricaoConteudo"]) < 30 || strlen($_POST["descricaoConteudo"]) > 300) {
     $erros .= "Erro: campo 'Descrição do Conteúdo' deve ter entre 30 e 300 caracteres.<br>";
 }
@@ -33,10 +37,7 @@ if (strlen($_POST["tipo_conteudo"]) < 5 || strlen($_POST["tipo_conteudo"]) > 20)
     $erros .= "Erro: campo 'Tipo de Conteúdo' deve ter entre 5 e 20 caracteres.<br>";
 }           
 
-if (strlen($_POST["tituloConteudo"]) < 5 || strlen($_POST["tituloConteudo"]) > 40) {
-    $erros .= "Erro: campo 'Titulo de Conteúdo' deve ter entre 5 e 20 caracteres.<br>";
-}           
-
+//Validar ID da disciplina?
 
 if (!empty($erros)) {
     // Exibe os erros diretamente na tela

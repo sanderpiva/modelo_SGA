@@ -16,8 +16,8 @@ if (strlen($_POST["registroProfessor"]) < 3 || strlen($_POST["registroProfessor"
     $erros .= "Erro: campo 'Registro do Professor' deve ter entre 3 e 20 caracteres.<br>";
 }
 
-if (strlen($_POST["nomeProfessor"]) < 3 || strlen($_POST["nomeProfessor"]) > 30) {
-    $erros .= "Erro: campo 'Nome do Professor' deve ter entre 3 e 30 caracteres.<br>";
+if (strlen($_POST["nomeProfessor"]) < 10 || strlen($_POST["nomeProfessor"]) > 30) {
+    $erros .= "Erro: campo 'Nome do Professor' deve ter entre 10 e 30 caracteres.<br>";
 }
 
 if (!filter_var($_POST["emailProfessor"], FILTER_VALIDATE_EMAIL)) {

@@ -15,6 +15,7 @@
             <tr>
                 <th>ID turma</th>
                 <th>Código Turma</th>
+                <th>Nome Turma</th>
                 <th>Acoes</th>
             </tr>
         </thead>
@@ -23,7 +24,7 @@
             include '../conexao.php'; // Inclui o arquivo de conexão
 
             // Assumindo que a tabela se chama 'turma' e as colunas correspondem aos campos do formulário
-            $sql = "SELECT id_turma, codigoTurma FROM turma"; // Explicitando colunas
+            $sql = "SELECT * FROM turma"; // Explicitando colunas
             $res = mysqli_query($conn, $sql);
 
              if ($res === false) {
@@ -33,11 +34,12 @@
                  while ($reg = mysqli_fetch_assoc($res)) {
                      $id_turma = $reg['id_turma'];
                      $codigoTurma = $reg['codigoTurma'];
+                     $nomeTurma = $reg['nomeTurma'];
                 
                      echo "<tr>";
                      echo "<td>" . htmlspecialchars($id_turma) . "</td>";
                      echo "<td>" . htmlspecialchars($codigoTurma) . "</td>";
-                
+                     echo "<td>" . htmlspecialchars($nomeTurma) . "</td>";
                      echo "<td id='buttons-wrapper'>";
                      // Chama a função JS passando o código da turma
                      echo "<button onclick='atualizarTurma(\"" . htmlspecialchars($id_turma) . "\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";

@@ -4,35 +4,20 @@ $erros = "";
 
 // Verificação de campos obrigatórios
 if (
-    empty($_POST["codigoDisciplina"]) ||
-    empty($_POST["codigoConteudo"]) ||
-    empty($_POST["codigoProva"]) ||
-    empty($_POST["codigoQuestao"]) ||
-    empty($_POST["aluno_matricula"])
+    empty($_POST["aluno_matricula"])||
+    empty($_POST["id_disciplina"]) 
+    
 ) {
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
 
-// Validações individuais
-if (strlen($_POST["codigoDisciplina"]) < 3 || strlen($_POST["codigoDisciplina"]) > 20) {
-    $erros .= "Erro: campo 'Código da Disciplina' deve ter entre 3 e 20 caracteres.<br>";
-}
-
-if (strlen($_POST["codigoConteudo"]) < 3 || strlen($_POST["codigoConteudo"]) > 20) {
-    $erros .= "Erro: campo 'Código do Conteúdo' deve ter entre 3 e 20 caracteres.<br>";
-}
-
-if (strlen($_POST["codigoProva"]) < 3 || strlen($_POST["codigoProva"]) > 20) {
-    $erros .= "Erro: campo 'Código da Prova' deve ter entre 3 e 20 caracteres.<br>";
-}
-
-if (strlen($_POST["codigoQuestao"]) < 3 || strlen($_POST["codigoQuestao"]) > 20) {
-    $erros .= "Erro: campo 'Código da Questão' deve ter entre 3 e 20 caracteres.<br>";
-}
 
 if (strlen($_POST["aluno_matricula"]) < 3 || strlen($_POST["aluno_matricula"]) > 20) {
     $erros .= "Erro: campo 'Matrícula do Aluno' deve ter entre 3 e 20 caracteres.<br>";
 }
+
+// Validar ID disciplina? Eh uma chave estrangeira!
+
 
 // Exibe erros ou prossegue com submissão
 if (!empty($erros)) {

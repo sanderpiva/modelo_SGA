@@ -6,12 +6,13 @@
     $conteudo = $_POST["conteudo"];
     $data_prova = $_POST["data_prova"];
     $professor = $_POST["professor"];
-    $codigoQuestaoProva = $_POST["codigoQuestaoProva"];
+    $id_disciplina = $_POST["id_disciplina"];
+    $id_professor = $_POST["id_professor"];
     
     //conexao.php
     include '../conexao.php';
 
-    $sql = "INSERT INTO prova VALUES (NULL, '$codigoProva', '$tipo_prova', '$disciplina', '$conteudo', '$data_prova', '$professor', '$codigoQuestaoProva')";
+    $sql = "INSERT INTO prova VALUES (NULL, '$codigoProva', '$tipo_prova', '$disciplina', '$conteudo', '$data_prova', '$professor', '$id_disciplina', '$id_professor')";
 
     if ($conn->query($sql) === TRUE) {
         echo "<p>Dados inseridos com sucesso!</p>";

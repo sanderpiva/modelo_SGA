@@ -69,6 +69,14 @@ if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
         <input type="text" name="professor" id="professor" placeholder="Digite professor" value="<?php echo $isUpdating ? htmlspecialchars($provaData['professor']) : ''; ?>" required>
         <hr>
 
+        <label for="id_disciplina">ID disciplina:</label>
+        <input type="text" name="id_disciplina" id="id_disciplina" placeholder="Digite professor" value="<?php echo $isUpdating ? htmlspecialchars($provaData['Disciplina_id_disciplina']) : ''; ?>" required>
+        <hr>
+
+        <label for="id_professor">ID Professor:</label>
+        <input type="text" name="id_professor" id="id_professor" placeholder="Digite professor" value="<?php echo $isUpdating ? htmlspecialchars($provaData['Disciplina_Professor_id_professor']) : ''; ?>" required>
+        <hr>
+
         <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
     </form>
 

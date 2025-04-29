@@ -1,33 +1,44 @@
 <?php
 
-    $codigoTurma = $_POST["codigoTurma"];
-    
-    //conexao.php
-    include '../conexao.php';
+  $servidor = 'localhost';
+  $usuario = 'root';
+  $senha = '';
+  $banco = 'gerenciamento_academico_completo';
 
-    $sql = "INSERT INTO turma VALUES (NULL, '$codigoTurma')";
-
-    if ($conn->query($sql) === TRUE) {
-        echo "<p>Dados inseridos com sucesso!</p>";
-        echo '<p><a href="../../../servicos_professor/pagina_servicos_professor.php" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Dashboard</a></p>';
-    } else {
+    try 
+    {
+        $dsn = "mysql:host=$servidor;dbname=$banco;charset=utf8"; 
+        $conexao = new PDO($dsn, $usuario, $senha);
+        $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-        $erro = $conn->error;
-        // Verifica se o erro é de chave estrangeira (MySQL error code 1452)
-        if ($conn->errno == 1452) {
-          echo "<p style='color: red;'>Erro: Problema com vinculos</p>";
-        } elseif (strpos($erro, "Column count doesn't match value count") !== false) {
-          echo "<p style='color: orange;'>Erro: Insira primeiro aluno, disciplina, professor</p>";
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            $codigoTurma  = $_POST['codigoTurma'] ?? '';
+            $nomeTurma   = $_POST['nome_turma'] ?? '';
+            
+            $sql = "INSERT INTO turma (codigoTurma, nomeTurma) VALUES (:codigoTurma, :nomeTurma)";
+            $stmt = $conexao->prepare($sql);
+            $stmt->execute([
+                ':codigoTurma'  => $codigoTurma,
+                ':nomeTurma'   => $nomeTurma,
+                
+            ]);
+    
+            echo "<p>Turma cadastrada com sucesso!</p>";
+            echo '<p><a href="../../../servicos_professor/pagina_servicos_professor.php" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Dashboard</a></p>';
+    
         } else {
-            echo "<p>Erro ao inserir dados: " . $erro . "</p>";
-        } 
+            echo "<p>Requisição inválida.</p>";
+            echo '<p><a href="formTurma.php" style="padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Cadastro</a></p>';
+        }
+    } catch (PDOException $e) {
+        echo "Erro ao conectar ou cadastrar: " . $e->getMessage();
         echo '<p><a href="formTurma.php" style="padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Cadastro</a></p>';
-
-    }
-
-    $conn->close();
-
+    }    
+  
 ?>
+
+
 
 
 

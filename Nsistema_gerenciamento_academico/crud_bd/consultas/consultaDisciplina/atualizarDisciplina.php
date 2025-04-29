@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_disciplina'])) {
     $professor = mysqli_real_escape_string($conn, $_POST['professor']);
     $descricaoDisciplina = mysqli_real_escape_string($conn, $_POST['descricaoDisciplina']);
     $semestre_periodo = mysqli_real_escape_string($conn, $_POST['semestre_periodo']);
-
+    $id_turma = mysqli_real_escape_string($conn, $_POST['id_turma']);
     // Constrói a query SQL de atualização (apenas as colunas que podem ser alteradas)
     $sql = "UPDATE disciplina SET
                 codigoDisciplina = '$codigoDisciplina',
@@ -20,7 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_disciplina'])) {
                 carga_horaria = '$carga_horaria',
                 professor = '$professor',
                 descricao = '$descricaoDisciplina',
-                semestre_periodo = '$semestre_periodo'
+                semestre_periodo = '$semestre_periodo',
+                Turma_id_turma = '$id_turma'
             WHERE id_disciplina = '$id_disciplina'"; // Ou WHERE id = '$id_disciplina'
 
     // Executa a query

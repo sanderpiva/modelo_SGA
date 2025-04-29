@@ -1,18 +1,12 @@
 <?php
 
-
-    
-    
-    $codigoDisciplina = $_POST["codigoDisciplina"];
-    $codigoConteudo = $_POST["codigoConteudo"];
-    $codigoProva = $_POST["codigoProva"];
-    $codigoQuestao = $_POST["codigoQuestao"];
     $aluno_matricula = $_POST["aluno_matricula"];
+    $id_disciplina = $_POST["id_disciplina"];
     
     //conexao.php
     include '../conexao.php';
 
-    $sql = "INSERT INTO matricula VALUES (NULL, '$codigoDisciplina','$codigoConteudo', '$codigoProva', '$codigoQuestao', '$aluno_matricula')";
+    $sql = "INSERT INTO matricula VALUES (NULL, '$aluno_matricula', '$id_disciplina')";
 
     if ($conn->query($sql) === TRUE) {
         echo "<p>Dados inseridos com sucesso!</p>";

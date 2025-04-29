@@ -1,5 +1,6 @@
 <?php
 $erros = "";
+//var_dump($_POST);
 
 // Verificação de campos obrigatórios
 if (
@@ -8,7 +9,9 @@ if (
     empty($_POST["carga_horaria"]) ||
     empty($_POST["professor"]) ||
     empty($_POST["descricaoDisciplina"]) ||
-    empty($_POST["semestre_periodo"])) {
+    empty($_POST["semestre_periodo"])||
+    empty($_POST["id_professor"]) ||
+    empty($_POST["id_turma"])) {
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
 
@@ -37,6 +40,7 @@ if (strlen($_POST["semestre_periodo"]) < 3 || strlen($_POST["semestre_periodo"])
     $erros .= "Erro: campo 'Semestre/Periodo' deve ter entre 3 e 20 caracteres.<br>";
 }
 
+//Validar IDs? Sao chaves estrangeiras
 
 // Exibe erros ou prossegue com submissão
 if (!empty($erros)) {

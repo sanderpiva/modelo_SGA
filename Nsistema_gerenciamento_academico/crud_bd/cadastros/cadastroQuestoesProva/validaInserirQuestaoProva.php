@@ -14,7 +14,7 @@ if (
 }
 
 // Validações individuais
-if (strlen($_POST["codigoQuestaoProva"]) < 1 || strlen($_POST["codigoQuestaoProva"]) > 20) {
+if (strlen($_POST["codigoQuestaoProva"]) < 3 || strlen($_POST["codigoQuestaoProva"]) > 20) {
     $erros .= "Erro: campo 'Código da Questão' deve ter entre 3 e 20 caracteres.<br>";
 }
 
@@ -25,6 +25,8 @@ if (strlen($_POST["descricao_questao"]) < 10 || strlen($_POST["descricao_questao
 if (strlen($_POST["tipo_prova"]) < 5 || strlen($_POST["tipo_prova"]) > 20) {
     $erros .= "Erro: campo 'Tipo de Prova' deve ter entre 5 e 20 caracteres.<br>";
 }
+
+//Validar IDs? Sao chaves estrangeiras!
 
 // Exibe erros ou prossegue com submissão
 if (!empty($erros)) {

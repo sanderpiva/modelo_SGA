@@ -56,8 +56,8 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno']) &&
         <input type="text" name="aluno_matricula" id="aluno_matricula" placeholder="" value="<?php echo $isUpdating ? htmlspecialchars($matriculaData['Aluno_id_aluno']) : ''; ?>" required <?php echo $isUpdating ? 'readonly' : ''; ?>>
         <hr>
 
-        <label for="disciplina_id">ID Disciplina:</label>
-        <input type="text" name="disciplina_id" id="disciplina_id" placeholder="" value="<?php echo $isUpdating ? htmlspecialchars($matriculaData['Disciplina_id_disciplina']) : ''; ?>" required <?php echo $isUpdating ? 'readonly' : ''; ?>>
+        <label for="id_disciplina">ID Disciplina:</label>
+        <input type="text" name="id_disciplina" id="id_disciplina" placeholder="" value="<?php echo $isUpdating ? htmlspecialchars($matriculaData['Disciplina_id_disciplina']) : ''; ?>" required <?php echo $isUpdating ? 'readonly' : ''; ?>>
         <hr>
 
         <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>

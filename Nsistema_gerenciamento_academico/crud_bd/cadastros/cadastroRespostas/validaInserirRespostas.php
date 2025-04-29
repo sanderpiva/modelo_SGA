@@ -2,42 +2,31 @@
 $erros = "";
 
 // Verificação de campos obrigatórios
+//var_dump($_POST);
 if (
     empty($_POST["codigoRespostas"]) ||
     empty($_POST["respostaDada"]) ||
-    empty($_POST["nota"])||
     empty($_POST["id_questao"]) ||
     empty($_POST["id_prova"]) ||
     empty($_POST["id_disciplina"]) ||
-    empty($_POST["id_professor"])
-) {
+    empty($_POST["id_professor"])) {
+        
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
+// 'nota' e 'acertou' vem como strings que podem ser 0 ou 1
+// se for 0 o sistema entende como false e sempre da erro
+// por isso nao fiz uma validação individual para esses campos
 
-// Validações individuais
+// Validações individuais parcialmente implementadas
 if (strlen($_POST["codigoRespostas"]) < 3 || strlen($_POST["codigoRespostas"]) > 20) {
     $erros .= "Erro: campo 'Código da Resposta' deve ter entre 3 e 20 caracteres.<br>";
 }
 
-if (strlen($_POST["respostaDada"]) < 1 || strlen($_POST["respostaDada"]) > 500) {
-    $erros .= "Erro: campo 'Resposta Dada' deve ter entre 1 e 500 caracteres.<br>";
+if (strlen($_POST["respostaDada"]) != 1 || !preg_match('/^[a-zA-Z]$/', $_POST["respostaDada"])) {
+    $erros .= "Erro: campo 'Resposta Dada' deve conter um único caractere alfabético.<br>";
 }
 
-if (!is_numeric($_POST["nota"]) || $_POST["nota"] < 0 || $_POST["nota"] > 1) {
-    $erros .= "Erro: campo 'Nota' deve ser um número entre 0 e 1.<br>";
-}
-
-if (!is_numeric($_POST["id_questao"]) || $_POST["id_questao"] <= 0) {
-    $erros .= "Erro: campo 'ID Questão' deve ser um número positivo.<br>";
-}
-
-if (!is_numeric($_POST["id_prova"]) || $_POST["id_prova"] <= 0) {
-    $erros .= "Erro: campo 'ID Prova' deve ser um número positivo.<br>";
-}
-
-if (!is_numeric($_POST["id_disciplina"]) || $_POST["id_disciplina"] <= 0) {
-    $erros .= "Erro: campo 'ID Disciplina' deve ser um número positivo.<br>";
-}   
+//Como validar os IDs que sao chaves estrangeiras?
 
 // Exibe erros ou prossegue com submissão
 if (!empty($erros)) {

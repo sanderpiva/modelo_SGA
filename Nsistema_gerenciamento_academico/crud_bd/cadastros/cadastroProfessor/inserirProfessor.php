@@ -1,35 +1,48 @@
 <?php
 
-    $registroProfessor = $_POST["registroProfessor"];
-    $nomeProfessor = $_POST["nomeProfessor"];
-    $emailProfessor = $_POST["emailProfessor"];
-    $enderecoProfessor = $_POST["enderecoProfessor"];
-    $telefoneProfessor = $_POST["telefoneProfessor"];
-    
-    //conexao.php
-    include '../conexao.php';
+  $servidor = 'localhost';
+  $usuario = 'root';
+  $senha = '';
+  $banco = 'gerenciamento_academico_completo';
 
-    $sql = "INSERT INTO professor VALUES (NULL, '$registroProfessor', '$nomeProfessor', '$emailProfessor', '$enderecoProfessor', '$telefoneProfessor')";
-
-    if ($conn->query($sql) === TRUE) {
-        echo "<p>Dados inseridos com sucesso!</p>";
-        echo '<p><a href="../../../servicos_professor/pagina_servicos_professor.php" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Dashboard</a></p>';
-    } else {
+    try 
+    {
+        $dsn = "mysql:host=$servidor;dbname=$banco;charset=utf8"; 
+        $conexao = new PDO($dsn, $usuario, $senha);
+        $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-        $erro = $conn->error;
-        // Verifica se o erro é de chave estrangeira (MySQL error code 1452)
-        if ($conn->errno == 1452) {
-          echo "<p style='color: red;'>Erro: Problema com vinculos</p>";
-        } elseif (strpos($erro, "Column count doesn't match value count") !== false) {
-          echo "<p style='color: orange;'>Erro: Insira primeiro o conteudo, disciplina, prova e questões desejadas.</p>";
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            $registroProfessor  = $_POST['registroProfessor'] ?? '';
+            $nomeProfessor   = $_POST['nomeProfessor'] ?? '';
+            $emailProfessor  = $_POST['emailProfessor'] ?? '';
+            $enderecoProfessor = $_POST['enderecoProfessor'] ?? '';
+            $telefoneProfessor = $_POST['telefoneProfessor'] ?? '';
+    
+            $sql = "INSERT INTO professor (registroProfessor, nome, email, endereco, telefone) VALUES (:registroProfessor, :nome, :email, :endereco, :telefone)";
+            $stmt = $conexao->prepare($sql);
+            $stmt->execute([
+                ':registroProfessor'  => $registroProfessor,
+                ':nome'   => $nomeProfessor,
+                ':email'  => $emailProfessor,
+                ':endereco' => $enderecoProfessor,
+                ':telefone' => $telefoneProfessor
+            ]);
+    
+            echo "<p>Professor(a) cadastrado com sucesso!</p>";
+            echo '<p><a href="../../../servicos_professor/pagina_servicos_professor.php" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Dashboard</a></p>';
+    
         } else {
-            echo "<p>Erro ao inserir dados: " . $erro . "</p>";
-        } 
-        echo '<p><a href="cadastroProfessor.php" style="padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Cadastro</a></p>';
-
+            echo "<p>Requisição inválida.</p>";
+            echo '<p><a href="formProfessor.php" style="padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Cadastro</a></p>';
+        }
+    } catch (PDOException $e) {
+        echo "Erro ao conectar ou cadastrar: " . $e->getMessage();
+        echo '<p><a href="formProfessor.php" style="padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Cadastro</a></p>';
     }
-
-
-    $conn->close();
-
+    
+  
 ?>
+
+
+

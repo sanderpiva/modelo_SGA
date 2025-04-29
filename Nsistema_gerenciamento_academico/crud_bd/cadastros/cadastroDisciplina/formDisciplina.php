@@ -74,8 +74,12 @@ if (isset($_GET['id_disciplina']) && !empty($_GET['id_disciplina'])) {
             <input type="text" value="<?php echo htmlspecialchars($disciplinaData['Professor_id_professor']); ?>" readonly required>
             <input type="hidden" name="Professor_id_professor" value="<?php echo htmlspecialchars($disciplinaData['Professor_id_professor']); ?>">
         <?php else: ?>
-            <input type="text" name="Professor_id_professor" id="Professor_id_professor" placeholder="Digite o ID do professor">
+            <input type="text" name="Professor_id_professor" id="Professor_id_professor" placeholder="Digite o ID do professor" required>
         <?php endif; ?>
+        <hr>
+
+        <label for="id_turma">ID turma:</label>
+        <input type="text" name="id_turma" id="id_turma" placeholder="Digite ID turma:" value="<?php echo $isUpdating ? htmlspecialchars($disciplinaData['Turma_id_turma']) : ''; ?>" required>
         <hr>
 
         <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>

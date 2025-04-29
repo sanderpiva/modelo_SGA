@@ -31,8 +31,8 @@ if (strlen($_POST["enderecoAluno"]) < 5 || strlen($_POST["enderecoAluno"]) > 64)
     $erros .= "Erro: campo 'endereço' deve conter entre 5 e 64 caracteres.<br>";
 }
 
-if (strlen($_POST["cidadeAluno"]) < 5 || strlen($_POST["cidadeAluno"]) > 64) {
-    $erros .= "Erro: campo 'cidade' deve conter entre 5 e 64 caracteres.<br>";
+if (strlen($_POST["cidadeAluno"]) < 5 || strlen($_POST["cidadeAluno"]) > 20) {
+    $erros .= "Erro: campo 'cidade' deve conter entre 5 e 20 caracteres.<br>";
 }
 if (strlen($_POST["telefoneAluno"]) < 10 || strlen($_POST["telefoneAluno"]) > 25) {
     $erros .= "Erro: campo 'telefone' deve conter entre 10 e 25 caracteres.<br>";
