@@ -49,8 +49,8 @@ if (isset($_GET['id_turma']) && !empty($_GET['id_turma'])) {
         <?php endif; ?>
         <hr>
 
-        <label for="nome_turma">Nome da turma (Ex: 6 serie A):</label>
-        <input type="text" name="nome_turma" id="nome_turma" placeholder="" value="<?php echo $isUpdating ? htmlspecialchars($turmaData['nomeTurma']) : ''; ?>" required>
+        <label for="nomeTurma">Nome da turma (Ex: 6 serie A):</label>
+        <input type="text" name="nomeTurma" id="nomeTurma" placeholder="" value="<?php echo $isUpdating ? htmlspecialchars($turmaData['nomeTurma']) : ''; ?>" required>
         <hr>
 
         <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>

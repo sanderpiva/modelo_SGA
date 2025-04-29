@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_turma'])) {
     // Obtém e sanitiza os dados do formulário
     $id_turma = mysqli_real_escape_string($conn, $_POST['id_turma']);
     $codigoTurma = mysqli_real_escape_string($conn, $_POST['codigoTurma']);
-    $nomeTurma = mysqli_real_escape_string($conn, $_POST['nome_turma']);
+    $nomeTurma = mysqli_real_escape_string($conn, $_POST['nomeTurma']);
     // Constrói a query SQL de atualização
     // Usando o codigoTurma na cláusula WHERE para identificar o registro a ser atualizado
     $sql = "UPDATE turma SET

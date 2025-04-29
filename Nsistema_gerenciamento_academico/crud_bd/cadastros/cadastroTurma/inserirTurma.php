@@ -14,7 +14,7 @@
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $codigoTurma  = $_POST['codigoTurma'] ?? '';
-            $nomeTurma   = $_POST['nome_turma'] ?? '';
+            $nomeTurma   = $_POST['nomeTurma'] ?? '';
             
             $sql = "INSERT INTO turma (codigoTurma, nomeTurma) VALUES (:codigoTurma, :nomeTurma)";
             $stmt = $conexao->prepare($sql);

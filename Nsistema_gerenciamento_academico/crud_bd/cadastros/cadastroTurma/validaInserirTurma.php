@@ -4,7 +4,7 @@ $erros = "";
 // Verificação de campos obrigatórios
 if (
     empty($_POST["codigoTurma"]) ||
-    empty($_POST["nome_turma"])) {
+    empty($_POST["nomeTurma"])) {
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
 
@@ -12,7 +12,7 @@ if (
 if (strlen($_POST["codigoTurma"]) < 3 || strlen($_POST["codigoTurma"]) > 20) {
     $erros .= "Erro: campo 'Código da Turma' deve ter entre 3 e 20 caracteres.<br>";
 }
-if (strlen($_POST["nome_turma"]) < 6 || strlen($_POST["nome_turma"]) > 15) {
+if (strlen($_POST["nomeTurma"]) < 6 || strlen($_POST["nomeTurma"]) > 15) {
     $erros .= "Erro: campo 'Nome da Turma' deve ter entre 6 e 15 caracteres.<br>";
 }
 
