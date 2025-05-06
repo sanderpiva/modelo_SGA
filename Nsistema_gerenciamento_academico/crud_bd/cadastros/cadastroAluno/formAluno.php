@@ -1,6 +1,8 @@
 <?php
 require_once '../conexao.php';
 
+$turmas = $conexao->query("SELECT * FROM turma")->fetchAll(PDO::FETCH_ASSOC);
+	
 $isUpdating = false;
 $alunoData = [];
 $errors = "";
@@ -18,10 +20,9 @@ if (isset($_GET['id_aluno'])) {
     } else {
         $isUpdating = true;
     }
-} else {
-    $errors = "<p style='color:red;'>ID do aluno não fornecido.</p>";
-}
+} 
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -73,9 +74,17 @@ if (isset($_GET['id_aluno'])) {
             <label for="telefoneAluno">Telefone:</label>
             <input type="text" name="telefoneAluno" id="telefoneAluno" placeholder="Digite o telefone" value="<?php echo $isUpdating ? htmlspecialchars($alunoData['telefone']) : ''; ?>" required>
             <hr>
-
+            <!--
             <label for="id_turma">ID Turma:</label>
             <input type="text" name="id_turma" id="id_turma" placeholder="Digite id turma" value="<?php echo $isUpdating ? htmlspecialchars($alunoData['Turma_id_turma']) : ''; ?>" required>
+            <hr>
+            -->
+            <label for="id_turma">Nome da turma:</label>
+            <select name="id_turma" required>
+			<?php foreach ($turmas as $turma){ ?>
+				<option value="<?= $turma['id_turma'] ?>"><?= htmlspecialchars($turma['nomeTurma']) ?></option>
+			<?php } ?>
+		    </select>
             <hr>
 
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>

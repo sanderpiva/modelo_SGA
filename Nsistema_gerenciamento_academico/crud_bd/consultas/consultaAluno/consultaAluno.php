@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Página Web Consulta Aluno</title>
     <link rel="stylesheet" href="../../../css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
-          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="servicos_forms">
@@ -23,6 +23,7 @@
                 <th>Endereço</th>
                 <th>Cidade</th>
                 <th>Telefone</th>
+                <th>Turma</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -31,8 +32,24 @@
             require_once "../conexao.php";
 
             try {
-                $stmt = $conexao->query("SELECT * FROM aluno");
-                $alunos = $stmt->fetchAll();
+                $stmt = $conexao->query("
+                    SELECT
+                        a.matricula,
+                        a.nome,
+                        a.cpf,
+                        a.email,
+                        a.data_nascimento,
+                        a.endereco,
+                        a.cidade,
+                        a.telefone,
+                        t.nomeTurma AS nome_turma,
+                        a.id_aluno
+                    FROM
+                        aluno a
+                    JOIN
+                        turma t ON a.Turma_id_turma  = t.id_turma
+                ");
+                $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($alunos as $aluno) {
                     echo "<tr>";
@@ -44,16 +61,15 @@
                     echo "<td>" . htmlspecialchars($aluno['endereco']) . "</td>";
                     echo "<td>" . htmlspecialchars($aluno['cidade']) . "</td>";
                     echo "<td>" . htmlspecialchars($aluno['telefone']) . "</td>";
-                    $id_aluno = htmlspecialchars($aluno['id_aluno']);
-
+                    echo "<td>" . htmlspecialchars($aluno['nome_turma']) . "</td>"; // Exibe o nome da turma
                     echo "<td id='buttons-wrapper'>";
-                    echo "<button onclick='atualizarAluno(\"$id_aluno\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
-                    echo "<button onclick='excluirAluno(\"$id_aluno\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
+                    echo "<button onclick='atualizarAluno(\"" . htmlspecialchars($aluno['id_aluno']) . "\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
+                    echo "<button onclick='excluirAluno(\"" . htmlspecialchars($aluno['id_aluno']) . "\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
                     echo "</td>";
-                    echo "<tr>";
+                    echo "</tr>";
                 }
             } catch (PDOException $e) {
-                echo "<tr><td colspan='9'>Erro ao consultar alunos: " . $e->getMessage() . "</td></tr>";
+                echo "<tr><td colspan='10'>Erro ao consultar alunos: " . $e->getMessage() . "</td></tr>";
             }
             ?>
         </tbody>
