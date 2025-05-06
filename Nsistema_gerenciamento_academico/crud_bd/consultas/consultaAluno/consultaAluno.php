@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Pagina Web Consulta Aluno</title>
     <meta charset="UTF-8">
+    <title>Página Web Consulta Aluno</title>
     <link rel="stylesheet" href="../../../css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="servicos_forms">
 
@@ -13,74 +15,61 @@
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
-                <th>ID aluno</th>
                 <th>Matricula</th>
                 <th>Nome</th>
                 <th>CPF</th>
                 <th>Email</th>
                 <th>Data nascimento</th>
-                <th>Endereco</th>
+                <th>Endereço</th>
                 <th>Cidade</th>
                 <th>Telefone</th>
-                <th>Acoes</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            include '../conexao.php'; // Inclui o arquivo de conexão com o banco de dados
+            require_once "../conexao.php";
 
-            $sql = "SELECT * FROM aluno";
-            $res = mysqli_query($conn, $sql);
+            try {
+                $stmt = $conexao->query("SELECT * FROM aluno");
+                $alunos = $stmt->fetchAll();
 
-            if (mysqli_num_rows($res) > 0) { // Verifica se há resultados antes de iterar
-                while ($reg = mysqli_fetch_row($res)) {
-                    $id_aluno = $reg[0]; // ID do aluno (não exibido na tabela
-                    $matricula = $reg[1];
-                    $nome = $reg[2];
-                    $cpf = $reg[3];
-                    $email = $reg[4];
-                    $data = $reg[5];
-                    $endereco = $reg[6];
-                    $cidade = $reg[7];
-                    $telefone = $reg[8];
-
+                foreach ($alunos as $aluno) {
                     echo "<tr>";
-                    echo "<td>$id_aluno</td>"; // ID do aluno (não exibido na tabela)
-                    echo "<td>$matricula</td><td>$nome</td>";
-                    echo "<td>$cpf</td><td>$email</td>";
-                    echo "<td>$data</td><td>$endereco</td>";
-                    echo "<td>$cidade</td><td>$telefone</td>";
+                    echo "<td>" . htmlspecialchars($aluno['matricula']) . "</td>";
+                    echo "<td>" . htmlspecialchars($aluno['nome']) . "</td>";
+                    echo "<td>" . htmlspecialchars($aluno['cpf']) . "</td>";
+                    echo "<td>" . htmlspecialchars($aluno['email']) . "</td>";
+                    echo "<td>" . htmlspecialchars($aluno['data_nascimento']) . "</td>";
+                    echo "<td>" . htmlspecialchars($aluno['endereco']) . "</td>";
+                    echo "<td>" . htmlspecialchars($aluno['cidade']) . "</td>";
+                    echo "<td>" . htmlspecialchars($aluno['telefone']) . "</td>";
+                    $id_aluno = htmlspecialchars($aluno['id_aluno']);
 
                     echo "<td id='buttons-wrapper'>";
-                    // Passa a matrícula para o script do formulário (formAluno.php)
-                    echo "<button onclick='atualizarRegistro(\"$id_aluno\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
-                    echo "<button onclick='excluirRegistro(\"$id_aluno\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
+                    echo "<button onclick='atualizarAluno(\"$id_aluno\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
+                    echo "<button onclick='excluirAluno(\"$id_aluno\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
                     echo "</td>";
-                    echo "</tr>";
+                    echo "<tr>";
                 }
-            } else {
-                echo "<tr><td colspan='9'>Nenhum aluno encontrado.</td></tr>"; // Mensagem se não houver alunos
+            } catch (PDOException $e) {
+                echo "<tr><td colspan='9'>Erro ao consultar alunos: " . $e->getMessage() . "</td></tr>";
             }
-
-
-            mysqli_close($conn); // Fecha a conexão com o banco de dados
             ?>
         </tbody>
     </table>
 
     <br>
-    <a href="../../../servicos_professor/pagina_servicos_professor.php">Servicos</a>
+    <a href="../../../servicos_professor/pagina_servicos_professor.php">Voltar aos Serviços</a>
 
     <script>
-        function atualizarRegistro(id_aluno) {
-            // Redireciona para o formulário de aluno, passando a matrícula para indicar atualização
+        function atualizarAluno(id_aluno) {
             window.location.href = "../../cadastros/cadastroAluno/formAluno.php?id_aluno=" + id_aluno;
         }
 
-        function excluirRegistro(id_aluno) {
-            const confirmar = confirm("Tem certeza que deseja excluir o registro de matricula: " + id_aluno + "?");
+        function excluirAluno(id_aluno) {
+            const confirmar = confirm("Tem certeza que deseja excluir o registro de matrícula: " + id_aluno + "?");
             if (confirmar) {
-                // Assume que excluirAluno.php está na mesma pasta
                 window.location.href = "excluirAluno.php?id_aluno=" + id_aluno;
             }
         }

@@ -1,24 +1,25 @@
 <?php
-include '../conexao.php';
+require_once '../conexao.php';
 
 $isUpdating = false;
-$alunoData = array(); // Array para armazenar os dados do aluno em caso de atualização
+$alunoData = [];
 $errors = "";
 
-// Verifica se um ID de aluno foi passado na URL (modo de atualização)
-if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
-    $isUpdating = true;
-    $idAlunoToUpdate = mysqli_real_escape_string($conn, $_GET['id_aluno']);
+if (isset($_GET['id_aluno'])) {
+    $idAlunoToUpdate = $_GET['id_aluno'];
 
-    $sql = "SELECT * FROM aluno WHERE id_aluno = '$idAlunoToUpdate'";
-    $res = mysqli_query($conn, $sql);
+    $stmt = $conexao->prepare("SELECT * FROM aluno WHERE id_aluno = :id");
+    $stmt->execute([':id' => $idAlunoToUpdate]);
+    $alunoData = $stmt->fetch();
 
-    if (mysqli_num_rows($res) == 1) {
-        $alunoData = mysqli_fetch_assoc($res);
-    } else {
+    if (!$alunoData) {
         $errors = "<p style='color:red;'>Aluno com ID $idAlunoToUpdate não encontrado.</p>";
         $isUpdating = false;
+    } else {
+        $isUpdating = true;
     }
+} else {
+    $errors = "<p style='color:red;'>ID do aluno não fornecido.</p>";
 }
 ?>
 
@@ -93,6 +94,3 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
 </footer>
 
 </html>
-<?php
-mysqli_close($conn);
-?>

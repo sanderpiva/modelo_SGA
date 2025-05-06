@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Pagina Web Consulta Turma</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <title>Página Web Consulta Turma</title>
     <link rel="stylesheet" href="../../../css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="servicos_forms">
 
@@ -13,62 +15,50 @@
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
-                <th>ID turma</th>
                 <th>Código Turma</th>
                 <th>Nome Turma</th>
-                <th>Acoes</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            include '../conexao.php'; // Inclui o arquivo de conexão
+            require_once '../conexao.php';
 
-            // Assumindo que a tabela se chama 'turma' e as colunas correspondem aos campos do formulário
-            $sql = "SELECT * FROM turma"; // Explicitando colunas
-            $res = mysqli_query($conn, $sql);
+            try {
+                $stmt = $conexao->query("SELECT id_turma, codigoTurma, nomeTurma FROM turma");
+                $turmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-             if ($res === false) {
-                 echo "<tr><td colspan='5'>Erro ao consultar turmas: " . htmlspecialchars(mysqli_error($conn)) . "</td></tr>";
-             } elseif (mysqli_num_rows($res) > 0) {
-                 // Usando fetch_assoc para clareza e robustez com nomes de colunas
-                 while ($reg = mysqli_fetch_assoc($res)) {
-                     $id_turma = $reg['id_turma'];
-                     $codigoTurma = $reg['codigoTurma'];
-                     $nomeTurma = $reg['nomeTurma'];
-                
-                     echo "<tr>";
-                     echo "<td>" . htmlspecialchars($id_turma) . "</td>";
-                     echo "<td>" . htmlspecialchars($codigoTurma) . "</td>";
-                     echo "<td>" . htmlspecialchars($nomeTurma) . "</td>";
-                     echo "<td id='buttons-wrapper'>";
-                     // Chama a função JS passando o código da turma
-                     echo "<button onclick='atualizarTurma(\"" . htmlspecialchars($id_turma) . "\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
-                     echo "<button onclick='excluirTurma(\"" . htmlspecialchars($id_turma) . "\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
-                     echo "</td>";
-                     echo "</tr>";
-                 }
-             } else {
-                  echo "<tr><td colspan='5'>Nenhuma turma encontrada.</td></tr>"; // Mensagem se não houver turmas
-             }
-
-            mysqli_close($conn); // Fecha a conexão
+                foreach ($turmas as $turma) {
+                    $id_turma = htmlspecialchars($turma['id_turma']);
+                    echo "<tr>";
+                    echo "<td>" . htmlspecialchars($turma['codigoTurma']) . "</td>";
+                    echo "<td>" . htmlspecialchars($turma['nomeTurma']) . "</td>";
+                    echo "<td id='buttons-wrapper'>";
+                    echo "<button onclick='atualizarTurma(\"$id_turma\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
+                    echo "<button onclick='excluirTurma(\"$id_turma\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+            } catch (PDOException $e) {
+                echo "<tr><td colspan='4'>Erro ao consultar turmas: " . $e->getMessage() . "</td></tr>";
+            }
             ?>
         </tbody>
     </table>
 
-    <a href="../../../servicos_professor/pagina_servicos_professor.php">Servicos</a>
+    <br>
+    <a href="../../../servicos_professor/pagina_servicos_professor.php">Voltar aos Serviços</a>
 
     <script>
         function atualizarTurma(id_turma) {
-            // Redireciona para o formulário de turma (formTurma.php), passando o código
-            // AJUSTE O CAMINHO ABAIXO conforme a localização REAL de formTurma.php
+            // Redireciona para o formulário de edição da turma
             window.location.href = "../../cadastros/cadastroTurma/formTurma.php?id_turma=" + id_turma;
         }
 
         function excluirTurma(id_turma) {
-            const confirmar = confirm("Tem certeza que deseja excluir o registro de turma: " + id_turma + "?");
+            const confirmar = confirm("Tem certeza que deseja excluir a turma com ID: " + id_turma + "?");
             if (confirmar) {
-                // Assume que excluirTurma.php está na mesma pasta
+                // Redireciona para o script de exclusão da turma
                 window.location.href = "excluirTurma.php?id_turma=" + id_turma;
             }
         }

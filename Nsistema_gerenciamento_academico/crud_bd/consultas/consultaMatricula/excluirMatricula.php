@@ -1,38 +1,37 @@
-<?php
-include '../conexao.php';
 
+<?php
+require_once "../conexao.php";
+// Matricula vai ter um ID soh dela? Eh tabela intermediaria!
 if (isset($_GET['codigoMatricula']) && !empty($_GET['codigoMatricula'])) {
     $codigoMatriculaExcluir = $_GET['codigoMatricula'];
 
-    $sql = "DELETE FROM matricula WHERE aluno_matricula = ?";
-    $stmt = mysqli_prepare($conn, $sql);
+    $stmt = $conexao->prepare("DELETE FROM matricula WHERE aluno_matricula = :codigo");
+    $stmt->bindParam(':codigo', $codigoMatriculaExcluir, PDO::PARAM_STR); // Assumindo que codigoMatricula é string
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $codigoMatriculaExcluir);
-
-        if (mysqli_stmt_execute($stmt)) {
-            if (mysqli_stmt_affected_rows($stmt) > 0) {
-                echo "<script>alert('Registro excluído com sucesso!'); window.location.href = 'consultaMatricula.php';</script>";
+    try {
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                header("Location: consultaMatricula.php?excluido=sucesso");
+                exit;
             } else {
-                echo "<script>alert('Nenhum registro foi excluído. Verifique se o código está correto.'); window.location.href = 'consultaMatricula.php';</script>";
+                header("Location: consultaMatricula.php?excluido=nenhum");
+                exit;
             }
         } else {
-            // Captura erro específico de violação de chave estrangeira
-            $erro = mysqli_error($conn);
-            if (strpos($erro, 'foreign key constraint fails') !== false) {
-                echo "<script>alert('Erro: nao eh possivel excluir essa matricula pois ha vinculos com outros registros.'); window.location.href = 'consultaMatricula.php';</script>";
-            } else {
-                echo "<script>alert('Erro ao excluir: " . addslashes($erro) . "'); window.location.href = 'consultaMatricula.php';</script>";
-            }
+            header("Location: consultaMatricula.php?excluido=erro");
+            exit;
         }
-
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "<script>alert('Erro na preparação da consulta.'); window.location.href = 'consultaMatricula.php';</script>";
+    } catch (PDOException $e) {
+        if (strpos($e->getMessage(), 'foreign key constraint fails') !== false) {
+            header("Location: consultaMatricula.php?excluido=dependencia");
+            exit;
+        } else {
+            header("Location: consultaMatricula.php?excluido=erro_sql&erro=" . urlencode($e->getMessage()));
+            exit;
+        }
     }
 } else {
-    echo "<script>alert('Código de turma inválido para exclusão.'); window.location.href = 'consultaMatricula.php';</script>";
+    header("Location: consultaMatricula.php?excluido=codigo_invalido");
+    exit;
 }
-
-mysqli_close($conn);
 ?>

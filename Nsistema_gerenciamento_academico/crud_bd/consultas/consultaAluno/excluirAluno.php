@@ -1,19 +1,18 @@
-<?php
-include '../conexao.php';
+<?php 
+	require_once "../conexao.php";
+	if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
+		$id = $_GET['id_aluno'];
 
-if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
-    $id_aluno = mysqli_real_escape_string($conn, $_GET['id_aluno']);
+		$stmt = $conexao->prepare("DELETE FROM aluno WHERE id_aluno = :id");
+		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-    $sql = "DELETE FROM aluno WHERE id_aluno = '$id_aluno'";
-
-    if (mysqli_query($conn, $sql)) {
-        header("Location: ../../consultas/consultaAluno/consultaAluno.php?excluido=sucesso");
-    } else {
-        echo "Erro ao excluir o aluno: " . mysqli_error($conn);
-    }
-
-    mysqli_close($conn);
-} else {
-    echo "ID do aluno não especificado para exclusão.";
-}
+		if ($stmt->execute()) {
+			header("Location: ../../consultas/consultaAluno/consultaAluno.php?excluido=sucesso"); 
+			exit;
+		} else {
+			echo "Erro ao excluir o aluno.";
+		}
+	} else {
+		echo "ID não fornecido.";
+	}
 ?>

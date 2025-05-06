@@ -1,37 +1,36 @@
 <?php
-include '../conexao.php';
+require_once "../conexao.php";
 
 if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
-    $id_provaExcluir = $_GET['id_prova'];
+    $idProvaExcluir = $_GET['id_prova'];
 
-    $sql = "DELETE FROM prova WHERE id_prova = ?";
-    $stmt = mysqli_prepare($conn, $sql);
+    $stmt = $conexao->prepare("DELETE FROM prova WHERE id_prova = :id");
+    $stmt->bindParam(':id', $idProvaExcluir, PDO::PARAM_INT); // Assumindo que id_prova é um inteiro
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $id_provaExcluir);
-
-        if (mysqli_stmt_execute($stmt)) {
-            if (mysqli_stmt_affected_rows($stmt) > 0) {
-                echo "<script>alert('Registro excluído com sucesso!'); window.location.href = 'consultaProva.php';</script>";
+    try {
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                header("Location: consultaProva.php?excluido=sucesso");
+                exit;
             } else {
-                echo "<script>alert('Nenhum registro foi excluído. Verifique se o código está correto.'); window.location.href = 'consultaProva.php';</script>";
+                header("Location: consultaProva.php?excluido=nenhum");
+                exit;
             }
         } else {
-            $erro = mysqli_error($conn);
-            if (strpos($erro, 'foreign key constraint fails') !== false) {
-                echo "<script>alert('Erro: não é possível excluir essa prova pois há vínculos com outros registros.'); window.location.href = 'consultaProva.php';</script>";
-            } else {
-                echo "<script>alert('Erro ao excluir: " . addslashes($erro) . "'); window.location.href = 'consultaProva.php';</script>";
-            }
+            header("Location: consultaProva.php?excluido=erro");
+            exit;
         }
-
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "<script>alert('Erro na preparação da consulta.'); window.location.href = 'consultaProva.php';</script>";
+    } catch (PDOException $e) {
+        if (strpos($e->getMessage(), 'foreign key constraint fails') !== false) {
+            header("Location: consultaProva.php?excluido=dependencia");
+            exit;
+        } else {
+            header("Location: consultaProva.php?excluido=erro_sql&erro=" . urlencode($e->getMessage()));
+            exit;
+        }
     }
 } else {
-    echo "<script>alert('Código de prova inválido para exclusão.'); window.location.href = 'consultaProva.php';</script>";
+    header("Location: consultaProva.php?excluido=id_invalido");
+    exit;
 }
-
-mysqli_close($conn);
 ?>

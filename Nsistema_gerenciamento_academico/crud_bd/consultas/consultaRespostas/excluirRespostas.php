@@ -1,38 +1,36 @@
 <?php
-include '../conexao.php';
+require_once "../conexao.php";
 
-if (isset($_GET['id_respostas']) && !empty($_GET['id_respostas'])) {
-    $idRespostaExcluir = $_GET['id_respostas'];
+if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
+    $idRespostaExcluir = $_GET['id_resposta'];
 
-    $sql = "DELETE FROM respostas WHERE id_respostas = ?";
-    $stmt = mysqli_prepare($conn, $sql);
+    $stmt = $conexao->prepare("DELETE FROM respostas WHERE id_respostas = :id");
+    $stmt->bindParam(':id', $idRespostaExcluir, PDO::PARAM_INT); // Assumindo que id_respostas é um inteiro
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $idRespostaExcluir);
-
-        if (mysqli_stmt_execute($stmt)) {
-            if (mysqli_stmt_affected_rows($stmt) > 0) {
-                echo "<script>alert('Registro excluído com sucesso!'); window.location.href = 'consultaRespostas.php';</script>";
+    try {
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                header("Location: consultaRespostas.php?excluido=sucesso");
+                exit;
             } else {
-                echo "<script>alert('Nenhum registro foi excluído. Verifique se o código está correto.'); window.location.href = 'consultaRespostas.php';</script>";
+                header("Location: consultaRespostas.php?excluido=nenhum");
+                exit;
             }
         } else {
-            // Captura erro específico de violação de chave estrangeira
-            $erro = mysqli_error($conn);
-            if (strpos($erro, 'foreign key constraint fails') !== false) {
-                echo "<script>alert('Erro: nao eh possivel excluir essa resposta pois ha vinculos com outros registros.'); window.location.href = 'consultaRespostas.php';</script>";
-            } else {
-                echo "<script>alert('Erro ao excluir: " . addslashes($erro) . "'); window.location.href = 'consultaRespostas.php';</script>";
-            }
+            header("Location: consultaRespostas.php?excluido=erro");
+            exit;
         }
-
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "<script>alert('Erro na preparação da consulta.'); window.location.href = 'consultaRespostas.php';</script>";
+    } catch (PDOException $e) {
+        if (strpos($e->getMessage(), 'foreign key constraint fails') !== false) {
+            header("Location: consultaRespostas.php?excluido=dependencia");
+            exit;
+        } else {
+            header("Location: consultaRespostas.php?excluido=erro_sql&erro=" . urlencode($e->getMessage()));
+            exit;
+        }
     }
 } else {
-    echo "<script>alert('Código de resposta inválido para exclusão.'); window.location.href = 'consultaRespostas.php';</script>";
+    header("Location: consultaRespostas.php?excluido=id_invalido");
+    exit;
 }
-
-mysqli_close($conn);
 ?>

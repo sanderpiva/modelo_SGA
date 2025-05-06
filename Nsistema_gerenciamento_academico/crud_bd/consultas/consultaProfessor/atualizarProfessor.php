@@ -1,47 +1,46 @@
 <?php
-include '../conexao.php'; // Inclui o arquivo de conexão
+require_once '../conexao.php'; // Inclui o arquivo de conexão
 
-// Verifica se a requisição é POST e se os dados necessários foram enviados
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_professor'])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_professor'])) {
 
-    // Obtém e sanitiza os dados do formulário
-    $id_professor = mysqli_real_escape_string($conn, $_POST['id_professor']);
-    $registroProfessor = mysqli_real_escape_string($conn, $_POST['registroProfessor']);
-    $nomeProfessor = mysqli_real_escape_string($conn, $_POST['nomeProfessor']);
-    $emailProfessor = mysqli_real_escape_string($conn, $_POST['emailProfessor']);
-    $enderecoProfessor = mysqli_real_escape_string($conn, $_POST['enderecoProfessor']);
-    $telefoneProfessor = mysqli_real_escape_string($conn, $_POST['telefoneProfessor']);
-    
-    // Constrói a query SQL de atualização
-    $sql = "UPDATE professor SET
-                registroProfessor = '$registroProfessor',
-                nome = '$nomeProfessor',
-                email = '$emailProfessor',
-                endereco = '$enderecoProfessor',
-                telefone = '$telefoneProfessor'
-            WHERE id_professor = '$id_professor'";
+    $id_professor = $_POST['id_professor'];
+    $registroProfessor = $_POST['registroProfessor'];
+    $nomeProfessor = $_POST['nomeProfessor'];
+    $emailProfessor = $_POST['emailProfessor'];
+    $enderecoProfessor = $_POST['enderecoProfessor'];
+    $telefoneProfessor = $_POST['telefoneProfessor'];
 
-    // Executa a query
-    if (mysqli_query($conn, $sql)) {
-        // Atualização bem-sucedida
+    $stmt = $conexao->prepare("UPDATE professor SET
+                                registroProfessor = :registro,
+                                nome = :nome,
+                                email = :email,
+                                endereco = :endereco,
+                                telefone = :telefone
+                                WHERE id_professor = :id");
+
+    $stmt->execute([
+        ':registro' => $registroProfessor,
+        ':nome' => $nomeProfessor,
+        ':email' => $emailProfessor,
+        ':endereco' => $enderecoProfessor,
+        ':telefone' => $telefoneProfessor,
+        ':id' => $id_professor
+    ]);
+
+    if ($stmt->rowCount() > 0) {
         $message = "Professor com registro " . htmlspecialchars($registroProfessor) . " atualizado com sucesso!";
-        // Redireciona de volta para a página de consulta
         header("Location: consultaProfessor.php?message=" . urlencode($message));
-        exit(); // Garante que o script pare após o redirecionamento
+        exit(); 
     } else {
-        // Erro na atualização
-        $error = "Erro ao atualizar professor: " . mysqli_error($conn);
+        $error = "Erro ao atualizar professor.";
         $pathToForm = '../../cadastros/cadastroProfessor/formProfessor.php';
         header("Location: " . $pathToForm . "?id_professor=" . urlencode($id_professor) . "&erros=" . urlencode($error));
-        exit(); // Garante que o script pare após o redirecionamento
+        exit(); 
     }
 
 } else {
-    // Requisição inválida
     $error = "Requisição inválida para atualização de professor.";
     header("Location: consultaProfessor.php?erros=" . urlencode($error));
     exit();
 }
-
-mysqli_close($conn); // Fecha a conexão
 ?>

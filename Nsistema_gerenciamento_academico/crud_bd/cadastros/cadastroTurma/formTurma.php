@@ -1,33 +1,30 @@
 <?php
-include '../conexao.php';
+require_once '../conexao.php';
 
 $isUpdating = false;
-$turmaData = array();
+$turmaData = [];
 $errors = "";
 
 // Verifica se um ID de turma foi passado na URL (modo de atualização)
 if (isset($_GET['id_turma']) && !empty($_GET['id_turma'])) {
     $isUpdating = true;
-    $idTurmaToUpdate = mysqli_real_escape_string($conn, $_GET['id_turma']);
+    $idTurmaToUpdate = $_GET['id_turma'];
 
-    $sql = "SELECT * FROM turma WHERE id_turma = '$idTurmaToUpdate'";
-    $res = mysqli_query($conn, $sql);
+    $stmt = $conexao->prepare("SELECT * FROM turma WHERE id_turma = :id");
+    $stmt->execute([':id' => $idTurmaToUpdate]);
+    $turmaData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($res === false) {
-        $errors .= "<p style='color:red;'>Erro ao buscar dados da turma: " . htmlspecialchars(mysqli_error($conn)) . "</p>";
+    if (!$turmaData) {
+        $errors = "<p style='color:red;'>Turma com ID " . htmlspecialchars($idTurmaToUpdate) . " não encontrada.</p>";
         $isUpdating = false; // Volta para o modo de cadastro se houver erro na busca
-    } elseif (mysqli_num_rows($res) == 1) {
-        $turmaData = mysqli_fetch_assoc($res); // Obtém os dados da turma
-    } else {
-        $errors .= "<p style='color:red;'>Turma com ID " . htmlspecialchars($idTurmaToUpdate) . " não encontrada.</p>";
-        $isUpdating = false;
     }
-}
+} 
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
     <title>Página Web - <?php echo $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Turma</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../../css/style.css">
@@ -35,31 +32,28 @@ if (isset($_GET['id_turma']) && !empty($_GET['id_turma'])) {
 <body class="servicos_forms">
 
     <div class="form_container">
+        <form class="form" action="<?php echo $isUpdating ? '../../consultas/consultaTurma/atualizarTurma.php' : 'validaInserirTurma.php'; ?>" method="post">
+            <h2>Formulário: <?php echo $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Turma</h2>
+            <hr>
 
-    <form class="form" action="<?php echo $isUpdating ? '../../consultas/consultaTurma/atualizarTurma.php' : 'validaInserirTurma.php'; ?>" method="post">
-        <h2>Formulário: <?php echo $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Turma</h2>
+            <label for="codigoTurma">Código Turma:</label>
+            <?php if ($isUpdating): ?>
+                <input type="text" name="codigoTurma" id="codigoTurma" value="<?php echo htmlspecialchars($turmaData['codigoTurma'] ?? ''); ?>" required>
+                <input type="hidden" name="id_turma" value="<?php echo htmlspecialchars($turmaData['id_turma'] ?? ''); ?>">
+            <?php else: ?>
+                <input type="text" name="codigoTurma" id="codigoTurma" placeholder="" required>
+            <?php endif; ?>
+            <hr>
+
+            <label for="nomeTurma">Nome da turma (Ex: 6 serie A):</label>
+            <input type="text" name="nomeTurma" id="nomeTurma" placeholder="" value="<?php echo htmlspecialchars($turmaData['nomeTurma'] ?? ''); ?>" required>
+            <hr>
+
+            <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
+        </form>
+
+        <?php echo $errors; ?>
         <hr>
-
-        <label for="codigoTurma">Código Turma:</label>
-        <?php if ($isUpdating): ?>
-            <input type="text" name="codigoTurma" id="codigoTurma" value="<?php echo htmlspecialchars($turmaData['codigoTurma']); ?>" required>
-            <input type="hidden" name="id_turma" value="<?php echo htmlspecialchars($turmaData['id_turma']); ?>">
-        <?php else: ?>
-            <input type="text" name="codigoTurma" id="codigoTurma" placeholder="" required>
-        <?php endif; ?>
-        <hr>
-
-        <label for="nomeTurma">Nome da turma (Ex: 6 serie A):</label>
-        <input type="text" name="nomeTurma" id="nomeTurma" placeholder="" value="<?php echo $isUpdating ? htmlspecialchars($turmaData['nomeTurma']) : ''; ?>" required>
-        <hr>
-
-        <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
-    </form>
-
-    <?php
-        echo $errors;
-    ?>
-    <hr>
     </div>
     <a href="../../../servicos_professor/pagina_servicos_professor.php">Servicos</a>
     <hr>
@@ -68,6 +62,3 @@ if (isset($_GET['id_turma']) && !empty($_GET['id_turma'])) {
     <p>Desenvolvido por Juliana e Sander</p>
 </footer>
 </html>
-<?php
-mysqli_close($conn);
-?>

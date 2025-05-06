@@ -1,38 +1,36 @@
 <?php
-include '../conexao.php';
+require_once "../conexao.php";
 
 if (isset($_GET['id_turma']) && !empty($_GET['id_turma'])) {
     $idTurmaExcluir = $_GET['id_turma'];
 
-    $sql = "DELETE FROM turma WHERE id_turma = ?";
-    $stmt = mysqli_prepare($conn, $sql);
+    $stmt = $conexao->prepare("DELETE FROM turma WHERE id_turma = :id");
+    $stmt->bindParam(':id', $idTurmaExcluir, PDO::PARAM_INT); // Assumindo que id_turma é um inteiro
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $idTurmaExcluir);
-
-        if (mysqli_stmt_execute($stmt)) {
-            if (mysqli_stmt_affected_rows($stmt) > 0) {
-                echo "<script>alert('Registro excluído com sucesso!'); window.location.href = 'consultaTurma.php';</script>";
+    try {
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                header("Location: consultaTurma.php?excluido=sucesso");
+                exit;
             } else {
-                echo "<script>alert('Nenhum registro foi excluído. Verifique se o código está correto.'); window.location.href = 'consultaTurma.php';</script>";
+                header("Location: consultaTurma.php?excluido=nenhum");
+                exit;
             }
         } else {
-            // Captura erro específico de violação de chave estrangeira
-            $erro = mysqli_error($conn);
-            if (strpos($erro, 'foreign key constraint fails') !== false) {
-                echo "<script>alert('Erro: nao eh possivel excluir essa turma pois ha vinculos com outros registros.'); window.location.href = 'consultaTurma.php';</script>";
-            } else {
-                echo "<script>alert('Erro ao excluir: " . addslashes($erro) . "'); window.location.href = 'consultaTurma.php';</script>";
-            }
+            header("Location: consultaTurma.php?excluido=erro");
+            exit;
         }
-
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "<script>alert('Erro na preparação da consulta.'); window.location.href = 'consultaTurma.php';</script>";
+    } catch (PDOException $e) {
+        if (strpos($e->getMessage(), 'foreign key constraint fails') !== false) {
+            header("Location: consultaTurma.php?excluido=dependencia");
+            exit;
+        } else {
+            header("Location: consultaTurma.php?excluido=erro_sql&erro=" . urlencode($e->getMessage()));
+            exit;
+        }
     }
 } else {
-    echo "<script>alert('Código de turma inválido para exclusão.'); window.location.href = 'consultaTurma.php';</script>";
+    header("Location: consultaTurma.php?excluido=id_invalido");
+    exit;
 }
-
-mysqli_close($conn);
 ?>

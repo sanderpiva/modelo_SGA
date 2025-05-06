@@ -1,12 +1,20 @@
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "gerenciamento_academico_completo";
+    $servidor = 'localhost';
+    $usuario = 'root';
+    $senha = '';
+    $banco = 'gerenciamento_academico_completo';
 
-    $conn = mysqli_connect($servername, $username, $password, $dbname);
 
-    if (!$conn) {
-        die("Falha na conexão: " . mysqli_connect_error());
+    try 
+    {
+    
+    $dsn = "mysql:host=$servidor;dbname=$banco;charset=utf8"; 
+    $conexao = new PDO($dsn, $usuario, $senha);
+    $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //echo "Conexão com o SGBD estabelecida com sucesso!";
+    } 
+    catch (PDOException $e)
+    {
+        echo "Erro na conexão com o servidor: " . $e->getMessage();
     }
 ?>
