@@ -1,30 +1,53 @@
 <?php
 require_once '../conexao.php';
 
+$alunos = $conexao->query("SELECT id_aluno, matricula, nome FROM aluno")->fetchAll(PDO::FETCH_ASSOC);
+$disciplinas = $conexao->query("SELECT id_disciplina, nome FROM disciplina")->fetchAll(PDO::FETCH_ASSOC);
+
 $isUpdating = false;
 $matriculaData = [];
 $errors = "";
+$nomeAlunoAtual = '';
+$nomeDisciplinaAtual = '';
+$matriculaAlunoAtual = '';
 
 // Verifica se os IDs de aluno e disciplina foram passados na URL (modo de atualização)
 if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno']) &&
     isset($_GET['id_disciplina']) && !empty($_GET['id_disciplina'])) {
 
     $isUpdating = true;
-    $alunoIdToUpdate = $_GET['id_aluno'];
-    $disciplinaIdToUpdate = $_GET['id_disciplina'];
+    $alunoIdToUpdate = filter_input(INPUT_GET, 'id_aluno', FILTER_SANITIZE_NUMBER_INT);
+    $disciplinaIdToUpdate = filter_input(INPUT_GET, 'id_disciplina', FILTER_SANITIZE_NUMBER_INT);
 
-    $stmt = $conexao->prepare("SELECT Aluno_id_aluno, Disciplina_id_disciplina FROM matricula
-                                WHERE Aluno_id_aluno = :aluno_id
-                                AND Disciplina_id_disciplina = :disciplina_id");
-    $stmt->execute([':aluno_id' => $alunoIdToUpdate, ':disciplina_id' => $disciplinaIdToUpdate]);
-    $matriculaData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$matriculaData) {
-        $errors = "<p style='color:red;'>Registro de matrícula não encontrado para os IDs fornecidos.</p>";
+    if ($alunoIdToUpdate === false || $alunoIdToUpdate === null ||
+        $disciplinaIdToUpdate === false || $disciplinaIdToUpdate === null) {
+        $errors = "<p style='color:red;'>IDs de aluno ou disciplina inválidos.</p>";
         $isUpdating = false;
+    } else {
+        $stmt = $conexao->prepare("SELECT Aluno_id_aluno, Disciplina_id_disciplina FROM matricula
+                                    WHERE Aluno_id_aluno = :aluno_id
+                                    AND Disciplina_id_disciplina = :disciplina_id");
+        $stmt->execute([':aluno_id' => $alunoIdToUpdate, ':disciplina_id' => $disciplinaIdToUpdate]);
+        $matriculaData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$matriculaData) {
+            $errors = "<p style='color:red;'>Registro de matrícula não encontrado para os IDs fornecidos.</p>";
+            $isUpdating = false;
+        } else {
+            // Buscar nome e matrícula do aluno
+            $alunoStmt = $conexao->prepare("SELECT nome, matricula FROM aluno WHERE id_aluno = :id");
+            $alunoStmt->execute([':id' => $matriculaData['Aluno_id_aluno']]);
+            $alunoInfo = $alunoStmt->fetch(PDO::FETCH_ASSOC);
+            $nomeAlunoAtual = htmlspecialchars($alunoInfo['nome'] ?? '');
+            $matriculaAlunoAtual = htmlspecialchars($alunoInfo['matricula'] ?? '');
+
+            // Buscar nome da disciplina
+            $disciplinaStmt = $conexao->prepare("SELECT nome FROM disciplina WHERE id_disciplina = :id");
+            $disciplinaStmt->execute([':id' => $matriculaData['Disciplina_id_disciplina']]);
+            $disciplina = $disciplinaStmt->fetch(PDO::FETCH_ASSOC);
+            $nomeDisciplinaAtual = htmlspecialchars($disciplina['nome'] ?? '');
+        }
     }
-} else {
-    $errors = "<p style='color:red;'>IDs de aluno e disciplina não fornecidos.</p>";
 }
 ?>
 
@@ -38,23 +61,41 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno']) &&
 <body class="servicos_forms">
 
     <div class="form_container">
-        <form class="form" action="<?php echo $isUpdating ? '../../consultas/consultaMatricula/atualizarMatricula.php' : 'validaInserirMatricula.php'; ?>" method="post">
+        <form class="form" action="<?php echo $isUpdating ? '#' : 'validaInserirMatricula.php'; ?>" method="post" <?php if ($isUpdating) echo 'onsubmit="return false;"'; ?>>
             <h2>Formulário: <?php echo $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Matrícula</h2>
             <hr>
 
             <?php if ($isUpdating): ?>
-                <label for="">Atualizar matrícula?</label><br>
-                <input type="hidden" name="original_id_aluno" value="<?php echo htmlspecialchars(isset($matriculaData['Aluno_id_aluno']) ? $matriculaData['Aluno_id_aluno'] : ''); ?>">
-                <input type="hidden" name="original_id_disciplina" value="<?php echo htmlspecialchars(isset($matriculaData['Disciplina_id_disciplina']) ? $matriculaData['Disciplina_id_disciplina'] : ''); ?>">
+                <p style="color: orange;">Esta funcionalidade de atualização ainda está em desenvolvimento.</p>
+                <label for="aluno_id">Aluno:</label>
+                <input type="text" value="<?php echo $nomeAlunoAtual; ?> (<?php echo $matriculaAlunoAtual; ?>)" readonly>
+                <hr>
+                <label for="disciplina_id">Disciplina:</label>
+                <input type="text" value="<?php echo $nomeDisciplinaAtual; ?>" readonly>
+                <hr>
+            <?php else: ?>
+                <label for="aluno_id">Aluno:</label>
+                <select name="aluno_id" id="aluno_id" required>
+                    <option value="">Selecione um aluno</option>
+                    <?php foreach ($alunos as $aluno): ?>
+                        <option value="<?= htmlspecialchars($aluno['id_aluno']) ?>">
+                            <?= htmlspecialchars($aluno['nome']) ?> (<?= htmlspecialchars($aluno['matricula']) ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <hr>
+
+                <label for="disciplina_id">Disciplina:</label>
+                <select name="disciplina_id" id="disciplina_id" required>
+                    <option value="">Selecione uma disciplina</option>
+                    <?php foreach ($disciplinas as $disciplina): ?>
+                        <option value="<?= htmlspecialchars($disciplina['id_disciplina']) ?>">
+                            <?= htmlspecialchars($disciplina['nome']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <hr>
             <?php endif; ?>
-
-            <label for="aluno_matricula">ID Aluno:</label>
-            <input type="text" name="aluno_matricula" id="aluno_matricula" placeholder="" value="<?php echo htmlspecialchars($matriculaData['Aluno_id_aluno'] ?? ''); ?>" required <?php echo $isUpdating ? 'readonly' : ''; ?>>
-            <hr>
-
-            <label for="disciplina_id">ID Disciplina:</label>
-            <input type="text" name="disciplina_id" id="disciplina_id" placeholder="" value="<?php echo htmlspecialchars($matriculaData['Disciplina_id_disciplina'] ?? ''); ?>" required <?php echo $isUpdating ? 'readonly' : ''; ?>>
-            <hr>
 
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>

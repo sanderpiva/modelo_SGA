@@ -19,10 +19,10 @@
                 <th>Resposta Dada</th>
                 <th>Acertou?</th>
                 <th>Nota</th>
-                <th>ID Questão</th>
-                <th>ID Prova</th>
-                <th>ID Disciplina</th>
-                <th>ID Professor</th>
+                <th>Descrição Questão</th>
+                <th>Código Prova</th>
+                <th>Nome Disciplina</th>
+                <th>Nome Professor</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -31,10 +31,29 @@
             require_once '../conexao.php';
 
             try {
-                
-                $stmt = $conexao->query("SELECT * FROM respostas");
-                $respostas = $stmt->fetchAll();
-
+                $stmt = $conexao->query("
+                    SELECT
+                        r.id_respostas,
+                        r.codigoRespostas,
+                        r.respostaDada,
+                        r.acertou,
+                        r.nota,
+                        q.descricao AS descricao_questao,
+                        p.codigoProva AS codigo_prova,
+                        d.nome AS nome_disciplina,
+                        prof.nome AS nome_professor
+                    FROM
+                        respostas r
+                    JOIN
+                        questoes q ON r.Questoes_id_questao = q.id_questao
+                    JOIN
+                        prova p ON r.Questoes_Prova_id_prova = p.id_prova
+                    JOIN
+                        disciplina d ON r.Questoes_Prova_Disciplina_id_disciplina = d.id_disciplina
+                    JOIN
+                        professor prof ON r.Questoes_Prova_Disciplina_Professor_id_professor = prof.id_professor;
+                ");
+                $respostas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($respostas as $resposta) {
                     $id_resposta = htmlspecialchars($resposta['id_respostas']);
@@ -43,10 +62,10 @@
                     echo "<td>" . htmlspecialchars($resposta['respostaDada']) . "</td>";
                     echo "<td>" . (htmlspecialchars($resposta['acertou']) ? 'Sim' : 'Não') . "</td>";
                     echo "<td>" . htmlspecialchars($resposta['nota']) . "</td>";
-                    echo "<td>" . htmlspecialchars($resposta['Questoes_id_questao']) . "</td>";
-                    echo "<td>" . htmlspecialchars($resposta['Questoes_Prova_id_prova']) . "</td>";
-                    echo "<td>" . htmlspecialchars($resposta['Questoes_Prova_Disciplina_id_disciplina']) . "</td>";
-                    echo "<td>" . htmlspecialchars($resposta['Questoes_Prova_Disciplina_Professor_id_professor']) . "</td>";
+                    echo "<td>" . htmlspecialchars($resposta['descricao_questao']) . "</td>";
+                    echo "<td>" . htmlspecialchars($resposta['codigo_prova']) . "</td>";
+                    echo "<td>" . htmlspecialchars($resposta['nome_disciplina']) . "</td>";
+                    echo "<td>" . htmlspecialchars($resposta['nome_professor']) . "</td>";
                     echo "<td id='buttons-wrapper'>";
                     echo "<button onclick='atualizarResposta(\"$id_resposta\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
                     echo "<button onclick='excluirResposta(\"$id_resposta\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
@@ -54,7 +73,7 @@
                     echo "</tr>";
                 }
             } catch (PDOException $e) {
-                echo "<tr><td colspan='10'>Erro ao consultar respostas: " . $e->getMessage() . "</td></tr>";
+                echo "<tr><td colspan='9'>Erro ao consultar respostas: " . $e->getMessage() . "</td></tr>";
             }
             ?>
         </tbody>
@@ -65,14 +84,12 @@
 
     <script>
         function atualizarResposta(id_resposta) {
-            // Redireciona para o formulário de edição da resposta
             window.location.href = "../../cadastros/cadastroRespostas/formRespostas.php?id_resposta=" + id_resposta;
         }
 
         function excluirResposta(id_resposta) {
             const confirmar = confirm("Tem certeza que deseja excluir a resposta com ID: " + id_resposta + "?");
             if (confirmar) {
-                // Redireciona para o script de exclusão da resposta
                 window.location.href = "excluirRespostas.php?id_resposta=" + id_resposta;
             }
         }

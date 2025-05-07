@@ -16,11 +16,11 @@
         <thead>
             <tr>
                 <th>Código Questão</th>
-                <th>Descrição Prova</th>
+                <th>Descrição Questão de Prova</th>
                 <th>Tipo Prova</th>
-                <th>ID Prova</th>
-                <th>ID Disciplina</th>
-                <th>ID Professor</th>
+                <th>Código Prova</th>
+                <th>Nome Disciplina</th>
+                <th>Nome Professor</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -29,9 +29,25 @@
             require_once '../conexao.php';
 
             try {
-                $stmt = $conexao->query("SELECT * FROM questoes");
-                $questoes = $stmt->fetchAll();
-
+                $stmt = $conexao->query("
+                    SELECT
+                        q.id_questao,
+                        q.codigoQuestao,
+                        q.descricao,
+                        q.tipo_prova,
+                        p.codigoProva AS codigo_prova,
+                        d.nome AS nome_disciplina,
+                        prof.nome AS nome_professor
+                    FROM
+                        questoes q
+                    JOIN
+                        prova p ON q.Prova_id_prova = p.id_prova
+                    JOIN
+                        disciplina d ON q.Prova_Disciplina_id_disciplina = d.id_disciplina
+                    JOIN
+                        professor prof ON q.Prova_Disciplina_Professor_id_professor = prof.id_professor;
+                ");
+                $questoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($questoes as $questao) {
                     $id_questaoProva = htmlspecialchars($questao['id_questao']);
@@ -39,9 +55,9 @@
                     echo "<td>" . htmlspecialchars($questao['codigoQuestao']) . "</td>";
                     echo "<td>" . htmlspecialchars($questao['descricao']) . "</td>";
                     echo "<td>" . htmlspecialchars($questao['tipo_prova']) . "</td>";
-                    echo "<td>" . htmlspecialchars($questao['Prova_id_prova']) . "</td>";
-                    echo "<td>" . htmlspecialchars($questao['Prova_Disciplina_id_disciplina']) . "</td>";
-                    echo "<td>" . htmlspecialchars($questao['Prova_Disciplina_Professor_id_professor']) . "</td>";
+                    echo "<td>" . htmlspecialchars($questao['codigo_prova']) . "</td>";
+                    echo "<td>" . htmlspecialchars($questao['nome_disciplina']) . "</td>";
+                    echo "<td>" . htmlspecialchars($questao['nome_professor']) . "</td>";
                     echo "<td id='buttons-wrapper'>";
                     echo "<button onclick='atualizarQuestaoProva(\"$id_questaoProva\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
                     echo "<button onclick='excluirQuestaoProva(\"$id_questaoProva\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
@@ -49,7 +65,7 @@
                     echo "</tr>";
                 }
             } catch (PDOException $e) {
-                echo "<tr><td colspan='8'>Erro ao consultar questões da prova: " . $e->getMessage() . "</td></tr>";
+                echo "<tr><td colspan='7'>Erro ao consultar questões da prova: " . $e->getMessage() . "</td></tr>";
             }
             ?>
         </tbody>

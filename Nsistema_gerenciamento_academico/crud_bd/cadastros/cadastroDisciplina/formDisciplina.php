@@ -1,25 +1,45 @@
 <?php
 require_once '../conexao.php';
 
+$professores = $conexao->query("SELECT id_professor, registroProfessor, nome FROM professor")->fetchAll(PDO::FETCH_ASSOC);
+$turmas = $conexao->query("SELECT id_turma, nomeTurma FROM turma")->fetchAll(PDO::FETCH_ASSOC);
+
 $isUpdating = false;
 $disciplinaData = [];
 $errors = "";
+$registroProfessorAtual = '';
+$nomeTurmaAtual = '';
 
 if (isset($_GET['id_disciplina'])) {
-    $idDisciplinaToUpdate = $_GET['id_disciplina'];
-
-    $stmt = $conexao->prepare("SELECT * FROM disciplina WHERE id_disciplina = :id");
-    $stmt->execute([':id' => $idDisciplinaToUpdate]);
-    $disciplinaData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$disciplinaData) {
-        $errors = "<p style='color:red;'>Disciplina com ID $idDisciplinaToUpdate não encontrada.</p>";
-        $isUpdating = false;
+    $idDisciplinaToUpdate = filter_input(INPUT_GET, 'id_disciplina', FILTER_SANITIZE_NUMBER_INT);
+    if ($idDisciplinaToUpdate === false || $idDisciplinaToUpdate === null) {
+        $errors = "<p style='color:red;'>ID de disciplina inválido.</p>";
     } else {
-        $isUpdating = true;
+        $stmt = $conexao->prepare("SELECT * FROM disciplina WHERE id_disciplina = :id");
+        $stmt->execute([':id' => $idDisciplinaToUpdate]);
+        $disciplinaData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$disciplinaData) {
+            $errors = "<p style='color:red;'>Disciplina com ID $idDisciplinaToUpdate não encontrada.</p>";
+            $isUpdating = false;
+        } else {
+            $isUpdating = true;
+            // Buscar o registroProfessor do professor associado
+            foreach ($professores as $professor) {
+                if ($professor['id_professor'] == $disciplinaData['Professor_id_professor']) {
+                    $registroProfessorAtual = $professor['registroProfessor'];
+                    break;
+                }
+            }
+            // Buscar o nome da turma associada
+            foreach ($turmas as $turma) {
+                if ($turma['id_turma'] == $disciplinaData['Turma_id_turma']) {
+                    $nomeTurmaAtual = $turma['nomeTurma'];
+                    break;
+                }
+            }
+        }
     }
-} else {
-    $errors = "<p style='color:red;'>ID da disciplina não fornecido.</p>";
 }
 ?>
 
@@ -66,18 +86,35 @@ if (isset($_GET['id_disciplina'])) {
             <input type="text" name="semestre_periodo" id="semestre_periodo" placeholder="Digite o semestre/período" value="<?php echo htmlspecialchars(isset($disciplinaData['semestre_periodo']) ? $disciplinaData['semestre_periodo'] : ''); ?>" required>
             <hr>
 
-            <label for="Professor_id_professor">ID do Professor:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?php echo htmlspecialchars(isset($disciplinaData['Professor_id_professor']) ? $disciplinaData['Professor_id_professor'] : ''); ?>" readonly required>
+                <label for="Professor_id_professor">Registro do Professor:</label>
+                <input type="text" value="<?php echo htmlspecialchars($registroProfessorAtual); ?>" readonly required>
                 <input type="hidden" name="Professor_id_professor" value="<?php echo htmlspecialchars(isset($disciplinaData['Professor_id_professor']) ? $disciplinaData['Professor_id_professor'] : ''); ?>">
-            <?php else: ?>
-                <input type="text" name="Professor_id_professor" id="Professor_id_professor" placeholder="Digite o ID do professor" required>
-            <?php endif; ?>
-            <hr>
+                <hr>
 
-            <label for="id_turma">ID turma:</label>
-            <input type="text" name="id_turma" id="id_turma" placeholder="Digite ID turma:" value="<?php echo htmlspecialchars(isset($disciplinaData['Turma_id_turma']) ? $disciplinaData['Turma_id_turma'] : ''); ?>" required>
-            <hr>
+                <label for="Turma_id_turma">Nome da turma:</label>
+                <input type="text" value="<?php echo htmlspecialchars($nomeTurmaAtual); ?>" readonly required>
+                <input type="hidden" name="id_turma" value="<?php echo htmlspecialchars(isset($disciplinaData['Turma_id_turma']) ? $disciplinaData['Turma_id_turma'] : ''); ?>">
+                <hr>
+            <?php else: ?>
+                <label for="id_professor">Registro do professor:</label>
+                <select name="id_professor" required>
+                    <option value="">Selecione um registro de professor</option>
+                    <?php foreach ($professores as $professor): ?>
+                        <option value="<?= $professor['id_professor'] ?>"><?= htmlspecialchars($professor['registroProfessor']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <hr>
+
+                <label for="Turma_id_turma">Nome da turma:</label>
+                <select name="id_turma" required>
+                    <option value="">Selecione um nome de turma</option>
+                    <?php foreach ($turmas as $turma): ?>
+                        <option value="<?= $turma['id_turma'] ?>"><?= htmlspecialchars($turma['nomeTurma']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <hr>
+            <?php endif; ?>
 
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>

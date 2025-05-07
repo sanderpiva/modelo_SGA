@@ -17,12 +17,12 @@
             <tr>
                 <th>Código</th>
                 <th>Tipo</th>
-                <th>Disciplina</th>
+                <th>Disciplina (Digitado)</th>
                 <th>Conteúdo</th>
                 <th>Data</th>
-                <th>Professor</th>
-                <th>ID Disciplina</th>
-                <th>ID Professor</th>
+                <th>Professor (Digitado)</th>
+                <th>Nome da Disciplina</th>
+                <th>Registro do Professor</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -31,20 +31,37 @@
             require_once "../conexao.php";
 
             try {
-                $stmt = $conexao->query("SELECT id_prova, codigoProva, tipo_prova, disciplina, conteudo, data_prova, professor, Disciplina_id_disciplina, Disciplina_Professor_id_professor FROM prova");
-                $provas = $stmt->fetchAll();
+                $stmt = $conexao->query("
+                    SELECT
+                        p.id_prova,
+                        p.codigoProva,
+                        p.tipo_prova,
+                        p.disciplina AS disciplina_digitada,
+                        p.conteudo,
+                        p.data_prova,
+                        p.professor AS professor_digitado,
+                        d.nome AS nome_disciplina,
+                        prof.registroProfessor AS registro_professor
+                    FROM
+                        prova p
+                    JOIN
+                        disciplina d ON p.Disciplina_id_disciplina = d.id_disciplina
+                    JOIN
+                        professor prof ON p.Disciplina_Professor_id_professor = prof.id_professor;
+                ");
+                $provas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($provas as $prova) {
                     $id_prova = htmlspecialchars($prova['id_prova']);
                     echo "<tr>";
                     echo "<td>" . htmlspecialchars($prova['codigoProva']) . "</td>";
                     echo "<td>" . htmlspecialchars($prova['tipo_prova']) . "</td>";
-                    echo "<td>" . htmlspecialchars($prova['disciplina']) . "</td>";
+                    echo "<td>" . htmlspecialchars($prova['disciplina_digitada']) . "</td>";
                     echo "<td>" . htmlspecialchars($prova['conteudo']) . "</td>";
                     echo "<td>" . htmlspecialchars($prova['data_prova']) . "</td>";
-                    echo "<td>" . htmlspecialchars($prova['professor']) . "</td>";
-                    echo "<td>" . htmlspecialchars($prova['Disciplina_id_disciplina']) . "</td>";
-                    echo "<td>" . htmlspecialchars($prova['Disciplina_Professor_id_professor']) . "</td>";
+                    echo "<td>" . htmlspecialchars($prova['professor_digitado']) . "</td>";
+                    echo "<td>" . htmlspecialchars($prova['nome_disciplina']) . "</td>";
+                    echo "<td>" . htmlspecialchars($prova['registro_professor']) . "</td>";
                     echo "<td id='buttons-wrapper'>";
                     echo "<button onclick='atualizarProva(\"$id_prova\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
                     echo "<button onclick='excluirProva(\"$id_prova\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
@@ -52,7 +69,7 @@
                     echo "</tr>";
                 }
             } catch (PDOException $e) {
-                echo "<tr><td colspan='10'>Erro ao consultar provas: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
+                echo "<tr><td colspan='9'>Erro ao consultar provas: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
             }
             ?>
         </tbody>

@@ -1,25 +1,48 @@
 <?php
 require_once '../conexao.php';
 
+$professores = $conexao->query("SELECT id_professor, registroProfessor, nome FROM professor")->fetchAll(PDO::FETCH_ASSOC);
+$disciplinas = $conexao->query("SELECT id_disciplina, nome FROM disciplina")->fetchAll(PDO::FETCH_ASSOC);
+
 $isUpdating = false;
-$provaData = []; // Array para armazenar os dados da prova em caso de atualização
+$provaData = [];
 $errors = "";
+$nomeProfessorAtual = '';
+$nomeDisciplinaAtual = '';
 
 // Verifica se um ID de prova foi passado na URL (modo de atualização)
 if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
     $isUpdating = true;
-    $idProvaToUpdate = $_GET['id_prova'];
+    $idProvaToUpdate = filter_input(INPUT_GET, 'id_prova', FILTER_SANITIZE_NUMBER_INT);
 
-    $stmt = $conexao->prepare("SELECT * FROM prova WHERE id_prova = :id");
-    $stmt->execute([':id' => $idProvaToUpdate]);
-    $provaData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$provaData) {
-        $errors = "<p style='color:red;'>Prova com ID " . htmlspecialchars($idProvaToUpdate) . " não encontrada.</p>";
+    if ($idProvaToUpdate === false || $idProvaToUpdate === null) {
+        $errors = "<p style='color:red;'>ID da prova inválido.</p>";
         $isUpdating = false;
+    } else {
+        $stmt = $conexao->prepare("SELECT * FROM prova WHERE id_prova = :id");
+        $stmt->execute([':id' => $idProvaToUpdate]);
+        $provaData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$provaData) {
+            $errors = "<p style='color:red;'>Prova com ID " . htmlspecialchars($idProvaToUpdate) . " não encontrada.</p>";
+            $isUpdating = false;
+        } else {
+            // Buscar nome do professor associado
+            foreach ($professores as $professor) {
+                if ($professor['id_professor'] == $provaData['Disciplina_Professor_id_professor']) {
+                    $nomeProfessorAtual = $professor['registroProfessor'] . ' - ' . $professor['nome'];
+                    break;
+                }
+            }
+            // Buscar nome da disciplina associada
+            foreach ($disciplinas as $disciplina) {
+                if ($disciplina['id_disciplina'] == $provaData['Disciplina_id_disciplina']) {
+                    $nomeDisciplinaAtual = $disciplina['nome'];
+                    break;
+                }
+            }
+        }
     }
-} else {
-    $errors = "<p style='color:red;'>ID da prova não fornecido.</p>";
 }
 
 ?>
@@ -50,8 +73,8 @@ if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
             <input type="text" name="tipo_prova" id="tipo_prova" placeholder="Digite tipo de prova" value="<?php echo htmlspecialchars($provaData['tipo_prova'] ?? ''); ?>" required>
             <hr>
 
-            <label for="disciplina">Disciplina:</label>
-            <input type="text" name="disciplina" id="disciplina" placeholder="Digite disciplina" value="<?php echo htmlspecialchars($provaData['disciplina'] ?? ''); ?>" required>
+            <label for="disciplina">Nome disciplina:</label>
+            <input type="text" name="disciplina" id="disciplina" placeholder="Digite tipo de prova" value="<?php echo htmlspecialchars($provaData['disciplina'] ?? ''); ?>" required>
             <hr>
 
             <label for="conteudo">Conteudo de prova:</label>
@@ -62,16 +85,36 @@ if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
             <input type="date" name="data_prova" id="data_prova" placeholder="Digite a data" value="<?php echo htmlspecialchars($provaData['data_prova'] ?? ''); ?>" required>
             <hr>
 
-            <label for="professor">Professor:</label>
-            <input type="text" name="professor" id="professor" placeholder="Digite professor" value="<?php echo htmlspecialchars($provaData['professor'] ?? ''); ?>" required>
+            <label for="nome_professor">Nome professor:</label>
+            <input type="text" name="nome_professor" id="nome_professor" placeholder="Digite nome professor" value="<?php echo htmlspecialchars($provaData['professor'] ?? ''); ?>" required>
             <hr>
 
-            <label for="id_disciplina">ID disciplina:</label>
-            <input type="text" name="id_disciplina" id="id_disciplina" placeholder="Digite id disciplina" value="<?php echo htmlspecialchars($provaData['Disciplina_id_disciplina'] ?? ''); ?>" required>
+            <label for="id_disciplina">Nome disciplina:</label>
+            <?php if ($isUpdating): ?>
+                <input type="text" value="<?php echo htmlspecialchars($nomeDisciplinaAtual); ?>" readonly required>
+                <input type="hidden" name="id_disciplina" value="<?php echo htmlspecialchars($provaData['Disciplina_id_disciplina'] ?? ''); ?>">
+            <?php else: ?>
+                <select name="id_disciplina" required>
+                    <option value="">Selecione uma disciplina</option>
+                    <?php foreach ($disciplinas as $disciplina): ?>
+                        <option value="<?= $disciplina['id_disciplina'] ?>"><?= htmlspecialchars($disciplina['nome']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
             <hr>
 
-            <label for="id_professor">ID Professor:</label>
-            <input type="text" name="id_professor" id="id_professor" placeholder="Digite id professor" value="<?php echo htmlspecialchars($provaData['Disciplina_Professor_id_professor'] ?? ''); ?>" required>
+            <label for="id_professor">Registro do Professor:</label>
+            <?php if ($isUpdating): ?>
+                <input type="text" value="<?php echo htmlspecialchars($nomeProfessorAtual); ?>" readonly required>
+                <input type="hidden" name="id_professor" value="<?php echo htmlspecialchars($provaData['Professor_id_professor'] ?? ''); ?>">
+            <?php else: ?>
+                <select name="id_professor" required>
+                    <option value="">Selecione um professor</option>
+                    <?php foreach ($professores as $professor): ?>
+                        <option value="<?= $professor['id_professor'] ?>"><?= htmlspecialchars($professor['registroProfessor']) ?> - <?= htmlspecialchars($professor['nome']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
             <hr>
 
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>

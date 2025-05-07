@@ -1,6 +1,7 @@
 <?php
 $erros = "";
 
+//var_dump($_POST);
 // Verificação de campos obrigatórios
 if (
     empty($_POST["codigoQuestaoProva"]) ||

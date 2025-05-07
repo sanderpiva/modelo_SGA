@@ -1,40 +1,40 @@
 <?php
 
+require_once '../conexao.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $codigoProva = $_POST["codigoProva"];
-    $tipo_prova = $_POST["tipo_prova"];
+    $tipoProva = $_POST["tipo_prova"];
     $disciplina = $_POST["disciplina"];
     $conteudo = $_POST["conteudo"];
-    $data_prova = $_POST["data_prova"];
-    $professor = $_POST["professor"];
-    $id_disciplina = $_POST["id_disciplina"];
-    $id_professor = $_POST["id_professor"];
-    
-    //conexao.php
-    include '../conexao.php';
+    $dataProva = $_POST["data_prova"];
+    $professor = $_POST["nome_professor"];
+    $idDisciplina = $_POST["id_disciplina"];
+    $idProfessor = $_POST["id_professor"];
 
-    $sql = "INSERT INTO prova VALUES (NULL, '$codigoProva', '$tipo_prova', '$disciplina', '$conteudo', '$data_prova', '$professor', '$id_disciplina', '$id_professor')";
+    try {
+        $sql = "INSERT INTO prova (codigoProva, tipo_prova, disciplina, conteudo, data_prova, professor, Disciplina_id_disciplina, Disciplina_Professor_id_professor)
+                VALUES (:codigo, :tipo, :disciplina, :conteudo, :data, :professor_nome, :id_disciplina, :id_professor)";
+        $stmt = $conexao->prepare($sql);
+        $stmt->execute([
+            ':codigo' => $codigoProva,
+            ':tipo' => $tipoProva,
+            ':disciplina' => $disciplina,
+            ':conteudo' => $conteudo,
+            ':data' => $dataProva,
+            ':professor_nome' => $professor,
+            ':id_disciplina' => $idDisciplina,
+            ':id_professor' => $idProfessor
+        ]);
 
-    if ($conn->query($sql) === TRUE) {
         echo "<p>Dados inseridos com sucesso!</p>";
         echo '<p><a href="../../../servicos_professor/pagina_servicos_professor.php" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Dashboard</a></p>';
-    } else {
-        
-        $erro = $conn->error;
-        // Verifica se o erro é de chave estrangeira (MySQL error code 1452)
-        if ($conn->errno == 1452) {
-          echo "<p style='color: red;'>Erro: É necessário cadastrar primeiro as provas e as questões antes de inserir uma disciplina.</p>";
-        } elseif (strpos($erro, "Column count doesn't match value count") !== false) {
-          echo "<p style='color: orange;'>Erro: Insira primeiro os dados de questão de prova e prova.</p>";
-        } else {
-            echo "<p>Erro ao inserir dados: " . $erro . "</p>";
-        } 
+    } catch (PDOException $e) {
+        echo "<p>Erro ao inserir dados: " . $e->getMessage() . "</p>";
         echo '<p><a href="formProva.php" style="padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Voltar ao Cadastro</a></p>';
-
     }
-
-    $conn->close();
+} else {
+    echo "<p>Requisição inválida.</p>";
+}
 
 ?>
-
-
-

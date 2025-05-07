@@ -75,7 +75,7 @@ if (isset($_GET['id_aluno'])) {
             <input type="text" name="telefoneAluno" id="telefoneAluno" placeholder="Digite o telefone" value="<?php echo $isUpdating ? htmlspecialchars($alunoData['telefone']) : ''; ?>" required>
             <hr>
             
-	    <label for="id_turma">Nome da turma:</label>
+            <label for="id_turma">Nome da turma:</label>
             <select name="id_turma" required>
 			<?php foreach ($turmas as $turma){ ?>
 				<option value="<?= $turma['id_turma'] ?>"><?= htmlspecialchars($turma['nomeTurma']) ?></option>

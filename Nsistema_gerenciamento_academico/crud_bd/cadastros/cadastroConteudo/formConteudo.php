@@ -1,6 +1,8 @@
 <?php
 require_once '../conexao.php';
 
+$disciplinas = $conexao->query("SELECT * FROM disciplina")->fetchAll(PDO::FETCH_ASSOC);
+
 $isUpdating = false;
 $conteudoData = [];
 $errors = "";
@@ -18,9 +20,7 @@ if (isset($_GET['id_conteudo'])) {
     } else {
         $isUpdating = true;
     }
-} else {
-    $errors = "<p style='color:red;'>ID do conteúdo não fornecido.</p>";
-}
+} 
 ?>
 
 <!DOCTYPE html>
@@ -69,10 +69,15 @@ if (isset($_GET['id_conteudo'])) {
             <label for="tipo_conteudo">Tipo de conteúdo:</label>
             <input type="text" name="tipo_conteudo" id="tipo_conteudo" placeholder="Digite o tipo" value="<?php echo htmlspecialchars(isset($conteudoData['tipo_conteudo']) ? $conteudoData['tipo_conteudo'] : ''); ?>" required>
             <hr>
-
-            <label for="id_disciplina">ID disciplina:</label>
-            <input type="text" name="id_disciplina" id="id_disciplina" placeholder="Digite id disciplina" value="<?php echo htmlspecialchars(isset($conteudoData['Disciplina_id_disciplina']) ? $conteudoData['Disciplina_id_disciplina'] : ''); ?>" required>
+            
+            <label for="id_disciplina">Nome da disciplina:</label>
+            <select name="id_disciplina" required>
+			<?php foreach ($disciplinas as $disciplina){ ?>
+				<option value="<?= $disciplina['id_disciplina'] ?>"><?= htmlspecialchars($disciplina['nome']) ?></option>
+			<?php } ?>
+		    </select>
             <hr>
+
 
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>

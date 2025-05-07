@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_prova'])) {
     $disciplina = $_POST['disciplina'];
     $conteudo = $_POST['conteudo'];
     $data_prova = $_POST['data_prova'];
-    $professor = $_POST['professor'];
+    $professor = $_POST['nome_professor'];
 
     $stmt = $conexao->prepare("UPDATE prova SET
                                 codigoProva = :codigoProva,

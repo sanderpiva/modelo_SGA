@@ -18,10 +18,10 @@
                 <th>Código</th>
                 <th>Nome</th>
                 <th>Carga Horária</th>
-                <th>Professor</th>
+                <th>Professor (ID)</th>
                 <th>Descrição</th>
                 <th>Semestre/Período</th>
-                <th>ID Professor</th>
+                <th>Nome Professor</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -30,8 +30,23 @@
             require_once "../conexao.php";
 
             try {
-                $stmt = $conexao->query("SELECT * FROM disciplina");
-                $disciplinas = $stmt->fetchAll();
+                $stmt = $conexao->query("
+                    SELECT
+                        d.id_disciplina,
+                        d.codigoDisciplina,
+                        d.nome,
+                        d.carga_horaria,
+                        d.professor AS professor_digitado,
+                        d.descricao,
+                        d.semestre_periodo,
+                        d.Professor_id_professor,
+                        p.nome AS nome_professor
+                    FROM
+                        disciplina d
+                    JOIN
+                        professor p ON d.Professor_id_professor = p.id_professor;
+                ");
+                $disciplinas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($disciplinas as $disciplina) {
                     $id_disciplina = htmlspecialchars($disciplina['id_disciplina']);
@@ -39,10 +54,10 @@
                     echo "<td>" . htmlspecialchars($disciplina['codigoDisciplina']) . "</td>";
                     echo "<td>" . htmlspecialchars($disciplina['nome']) . "</td>";
                     echo "<td>" . htmlspecialchars($disciplina['carga_horaria']) . "</td>";
-                    echo "<td>" . htmlspecialchars($disciplina['professor']) . "</td>";
+                    echo "<td>" . htmlspecialchars($disciplina['professor_digitado']) . "</td>";
                     echo "<td>" . htmlspecialchars($disciplina['descricao']) . "</td>";
                     echo "<td>" . htmlspecialchars($disciplina['semestre_periodo']) . "</td>";
-                    echo "<td>" . htmlspecialchars($disciplina['Professor_id_professor']) . "</td>";
+                    echo "<td>" . htmlspecialchars($disciplina['nome_professor']) . "</td>";
 
                     echo "<td id='buttons-wrapper'>";
                     echo "<button onclick='atualizarDisciplina(\"$id_disciplina\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";

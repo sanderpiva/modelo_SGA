@@ -1,6 +1,6 @@
 <?php
 $erros = "";
-
+var_dump($_POST);
 // Verificação de campos obrigatórios
 if (
     empty($_POST["codigoProva"]) ||
@@ -8,7 +8,7 @@ if (
     empty($_POST["disciplina"]) ||
     empty($_POST["conteudo"]) ||
     empty($_POST["data_prova"]) ||
-    empty($_POST["professor"]) ||
+    //empty($_POST["nome_professor"]) ||
     empty($_POST["id_disciplina"]) ||
     empty($_POST["id_professor"]) 
     
@@ -33,9 +33,10 @@ if (strlen($_POST["conteudo"]) < 30 || strlen($_POST["conteudo"]) > 300) {
     $erros .= "Erro: campo 'Conteúdo da Prova' deve ter entre 30 e 300 caracteres.<br>";
 }
 
-if (strlen($_POST["professor"]) < 5 || strlen($_POST["professor"]) > 20) {
+/*
+if (strlen($_POST["nome_professor"]) < 5 || strlen($_POST["nome_professor"]) > 20) {
     $erros .= "Erro: campo 'Professor' deve ter entre 5 e 20 caracteres.<br>";
-}
+}*/
 
 //Validar IDs? Sao chaves estrangeiras
 

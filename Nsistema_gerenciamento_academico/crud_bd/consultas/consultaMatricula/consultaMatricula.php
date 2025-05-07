@@ -15,8 +15,8 @@
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
-                <th>ID Aluno</th>
-                <th>ID Disciplina</th>
+                <th>Aluno</th>
+                <th>Disciplina</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -25,20 +25,34 @@
             require_once '../conexao.php';
 
             try {
-                $stmt = $conexao->query("SELECT Aluno_id_aluno, Disciplina_id_disciplina FROM matricula");
-                $matriculas = $stmt->fetchAll();
+                $stmt = $conexao->query("
+                    SELECT
+                        m.Aluno_id_aluno,
+                        m.Disciplina_id_disciplina,
+                        a.nome AS nome_aluno,
+                        d.nome AS nome_disciplina
+                    FROM
+                        matricula m
+                    JOIN
+                        aluno a ON m.Aluno_id_aluno = a.id_aluno
+                    JOIN
+                        disciplina d ON m.Disciplina_id_disciplina = d.id_disciplina
+                ");
+                $matriculas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if (count($matriculas) > 0) {
                     foreach ($matriculas as $matricula) {
                         $id_aluno = htmlspecialchars($matricula['Aluno_id_aluno']);
                         $id_disciplina = htmlspecialchars($matricula['Disciplina_id_disciplina']);
+                        $nome_aluno = htmlspecialchars($matricula['nome_aluno']);
+                        $nome_disciplina = htmlspecialchars($matricula['nome_disciplina']);
 
                         echo "<tr>";
-                        echo "<td>$id_aluno</td>";
-                        echo "<td>$id_disciplina</td>";
+                        echo "<td>$nome_aluno</td>";
+                        echo "<td>$nome_disciplina</td>";
                         echo "<td id='buttons-wrapper'>";
                         echo "<button onclick='atualizarMatricula(\"$id_aluno\", \"$id_disciplina\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
-                        echo "<button onclick='excluirMatricula(\"$id_aluno\", \"$id_disciplina\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
+                        echo "<button onclick='exclusaoEmDesenvolvimento()'><i class='fa-solid fa-trash'></i> Excluir</button>";
                         echo "</td>";
                         echo "</tr>";
                     }
@@ -60,11 +74,10 @@
             window.location.href = "../../cadastros/cadastroMatricula/formMatricula.php?id_aluno=" + encodeURIComponent(id_aluno) + "&id_disciplina=" + encodeURIComponent(id_disciplina);
         }
 
-        function excluirMatricula(id_aluno, id_disciplina) {
-            const confirmar = confirm("Tem certeza que deseja excluir a matrícula do Aluno ID: " + id_aluno + " na Disciplina ID: " + id_disciplina + "?");
-            if (confirmar) {
-                window.location.href = "excluirMatricula.php?id_aluno=" + encodeURIComponent(id_aluno) + "&id_disciplina=" + encodeURIComponent(id_disciplina);
-            }
+        function exclusaoEmDesenvolvimento() {
+            alert("A funcionalidade de exclusão de matrículas ainda está em desenvolvimento.");
+            // No futuro, aqui você implementaria a lógica para excluir a matrícula
+            // (redirecionamento para um script de exclusão, por exemplo).
         }
     </script>
 </body>

@@ -1,22 +1,14 @@
 <?php
 
 $erros = "";
-
+var_dump($_POST);
 // Verificação de campos obrigatórios
 if (
-    empty($_POST["aluno_matricula"])||
-    empty($_POST["id_disciplina"]) 
-    
+    empty($_POST["aluno_id"])||
+    empty($_POST["disciplina_id"])
 ) {
-    $erros .= "Todos os campos devem ser preenchidos.<br>";
+    $erros .= "Por favor, selecione um aluno e uma disciplina.<br>";
 }
-
-
-if (strlen($_POST["aluno_matricula"]) < 3 || strlen($_POST["aluno_matricula"]) > 20) {
-    $erros .= "Erro: campo 'Matrícula do Aluno' deve ter entre 3 e 20 caracteres.<br>";
-}
-
-// Validar ID disciplina? Eh uma chave estrangeira!
 
 
 // Exibe erros ou prossegue com submissão

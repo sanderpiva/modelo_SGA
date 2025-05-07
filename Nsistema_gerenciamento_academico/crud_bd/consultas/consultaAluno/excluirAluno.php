@@ -1,18 +1,37 @@
-<?php 
-	require_once "../conexao.php";
-	if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
-		$id = $_GET['id_aluno'];
+<?php
+require_once "../conexao.php";
+if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
+    $id_aluno = $_GET['id_aluno'];
 
-		$stmt = $conexao->prepare("DELETE FROM aluno WHERE id_aluno = :id");
-		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    try {
+        // Verificar se existem matrículas para este aluno
+        $stmt_check_matricula = $conexao->prepare("SELECT COUNT(*) FROM matricula WHERE Aluno_id_aluno = :id");
+        $stmt_check_matricula->bindParam(':id', $id_aluno, PDO::PARAM_INT);
+        $stmt_check_matricula->execute();
+        $count_matriculas = $stmt_check_matricula->fetchColumn();
 
-		if ($stmt->execute()) {
-			header("Location: ../../consultas/consultaAluno/consultaAluno.php?excluido=sucesso"); 
-			exit;
-		} else {
-			echo "Erro ao excluir o aluno.";
-		}
-	} else {
-		echo "ID não fornecido.";
-	}
+        if ($count_matriculas > 0) {
+            echo "<p style='color: red;'>Não é possível excluir este aluno pois ele está matriculado em uma ou mais disciplinas. Por favor, remova as matrículas deste aluno antes de excluí-lo.</p>";
+            echo '<p><a href="../../consultas/consultaMatricula/consultaMatricula.php">Verificar Matrículas</a></p>';
+        } else {
+            // Se não houver matrículas, prosseguir com a exclusão do aluno
+            $stmt_delete_aluno = $conexao->prepare("DELETE FROM aluno WHERE id_aluno = :id");
+            $stmt_delete_aluno->bindParam(':id', $id_aluno, PDO::PARAM_INT);
+
+            if ($stmt_delete_aluno->execute()) {
+                header("Location: ../../consultas/consultaAluno/consultaAluno.php?excluido=sucesso");
+                exit;
+            } else {
+                echo "<p style='color: red;'>Erro ao excluir o aluno.</p>";
+                echo '<p><a href="../../consultas/consultaAluno/consultaAluno.php">Voltar para a Consulta de Alunos</a></p>';
+            }
+        }
+    } catch (PDOException $e) {
+        echo "<p style='color: red;'>Erro ao verificar ou excluir o aluno: " . $e->getMessage() . "</p>";
+        echo '<p><a href="../../consultas/consultaAluno/consultaAluno.php">Voltar para a Consulta de Alunos</a></p>';
+    }
+} else {
+    echo "<p style='color: red;'>ID do aluno não fornecido.</p>";
+    echo '<p><a href="../../consultas/consultaAluno/consultaAluno.php">Voltar para a Consulta de Alunos</a></p>';
+}
 ?>
