@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pagina Web - Login Professor</title>
+    <title>Login Professor</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -11,16 +11,16 @@
 <?php
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Certifique-se de que a variável $_POST['tipo_calculo'] está definida antes de usá-la
+        
         if (isset($_POST['tipo_calculo'])) {
             $tipo_calculo = $_POST['tipo_calculo'];
 
             if ($tipo_calculo === 'servicos') {
-                // Redireciona para a página de serviços
+        
                 header("Location: ../servicos_professor/pagina_servicos_professor.php");
                 exit();
             } elseif ($tipo_calculo === 'resultados') {
-                // Redireciona para a página de resultados
+        
                 header("Location: ../servicos_professor/pagina_resultados_alunos_algebrando_estatico.php");
                 exit();
             } else {

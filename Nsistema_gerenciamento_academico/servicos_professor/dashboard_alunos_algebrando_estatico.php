@@ -6,12 +6,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pagina Web - Dashboard</title>
+    <title>Pagina Web - Atividades/Provas</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="home">
-    <h1> Dashboard - Algebrando </h1><br>
+    <h1> Atividades/Provas - Algebrando </h1><br>
     <div id="cards-container">
         <div class="card">
             <a href="../matematica_estatica/pa.php">

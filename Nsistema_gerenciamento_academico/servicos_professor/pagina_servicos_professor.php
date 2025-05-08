@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pagina Web - Servicos</title>
+    <title>Servicos</title>
     <meta charset="utf=8">
     <link rel="stylesheet" href="../css/style.css">
     <style>

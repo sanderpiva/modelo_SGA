@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pagina Web</title>
+    <title>Sistema Academico</title>
     <meta charset="utf=8">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -16,9 +16,9 @@
     
     </div>
     <div class="btn_home"><br>
-        <button  class="buttonInicioProfessor" onclick="window.location.href='login/loginProfessor.php'">Professor</button>
-        <button  class="buttonInicioAluno" onclick="window.location.href='login/loginAluno.php'">Aluno</button>
-
+        <button  class="buttonInicioProfessor" onclick="window.location.href='login/menuProfessor.html'">PROFESSOR</button>
+        <button  class="buttonInicioAluno" onclick="window.location.href='login/menuAluno.html'">ALUNO</button>
+        
     </div><br><br> 
 </body>
 <footer>

@@ -4,7 +4,7 @@
     // Sempre inicie a sessão no topo de qualquer página PHP que a utilize
     session_start();
     ?>
-    <title>Pagina Web - Dashboard</title>
+    <title>Atividades Dinamicas</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/style.css">
 </head>

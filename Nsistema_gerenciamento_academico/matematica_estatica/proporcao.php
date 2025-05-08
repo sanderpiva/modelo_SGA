@@ -41,7 +41,7 @@
             }
         ?>
         <br><br>
-        <a class="btn_dashboard" href="../servicos_professor/dashboard_alunos_algebrando_estatico.php">Dashboard</a>
+        <a class="btn_dashboard" href="../servicos_professor/dashboard_alunos_algebrando_estatico.php">Finalizar</a>
     </div>
 
 </body><br><br>
