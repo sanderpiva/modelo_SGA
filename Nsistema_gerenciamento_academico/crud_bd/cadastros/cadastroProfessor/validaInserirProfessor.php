@@ -32,8 +32,6 @@ if (strlen($_POST["telefoneProfessor"]) < 10 || strlen($_POST["telefoneProfessor
     $erros .= "Erro: campo 'Telefone' deve ter entre 10 e 25 caracteres.<br>";
 }
 
-
-// Exibe erros ou prossegue com submissão
 if (!empty($erros)) {
     echo "<!DOCTYPE html>
     <html>
@@ -53,7 +51,7 @@ if (!empty($erros)) {
     </html>";
     exit;
 } else {
-    // Sem erros: gera formulário oculto para submissão
+    
     echo '<form action="inserirProfessor.php" method="POST" name="form_inserir">';
     foreach ($_POST as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">';

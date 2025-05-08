@@ -6,11 +6,15 @@ $disciplinas = $conexao->query("SELECT * FROM disciplina")->fetchAll(PDO::FETCH_
 $isUpdating = false;
 $conteudoData = [];
 $errors = "";
+$nomeDisciplinaAtual = '';
 
 if (isset($_GET['id_conteudo'])) {
     $idConteudoToUpdate = $_GET['id_conteudo'];
 
-    $stmt = $conexao->prepare("SELECT * FROM conteudo WHERE id_conteudo = :id");
+    $stmt = $conexao->prepare("SELECT c.*, d.nome AS nomeDisciplina
+                               FROM conteudo c
+                               JOIN disciplina d ON c.Disciplina_id_disciplina = d.id_disciplina
+                               WHERE c.id_conteudo = :id");
     $stmt->execute([':id' => $idConteudoToUpdate]);
     $conteudoData = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -19,8 +23,9 @@ if (isset($_GET['id_conteudo'])) {
         $isUpdating = false;
     } else {
         $isUpdating = true;
+        $nomeDisciplinaAtual = htmlspecialchars($conteudoData['nomeDisciplina']);
     }
-} 
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +44,7 @@ if (isset($_GET['id_conteudo'])) {
 
             <label for="codigoConteudo">Código do conteúdo:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" name="codigoConteudo" id="codigoConteudo" placeholder="Digite o código" value="<?php echo htmlspecialchars(isset($conteudoData['codigoConteudo']) ? $conteudoData['codigoConteudo'] : ''); ?>" required>
+                <input type="text" name="codigoConteudo" id="codigoConteudo" placeholder="Digite o código" value="<?php echo htmlspecialchars(isset($conteudoData['codigoConteudo']) ? $conteudoData['codigoConteudo'] : ''); ?>" required readonly>
                 <input type="hidden" name="id_conteudo" value="<?php echo htmlspecialchars(isset($conteudoData['id_conteudo']) ? $conteudoData['id_conteudo'] : ''); ?>">
             <?php else: ?>
                 <input type="text" name="codigoConteudo" id="codigoConteudo" placeholder="Digite o código" required>
@@ -69,15 +74,21 @@ if (isset($_GET['id_conteudo'])) {
             <label for="tipo_conteudo">Tipo de conteúdo:</label>
             <input type="text" name="tipo_conteudo" id="tipo_conteudo" placeholder="Digite o tipo" value="<?php echo htmlspecialchars(isset($conteudoData['tipo_conteudo']) ? $conteudoData['tipo_conteudo'] : ''); ?>" required>
             <hr>
-            
-            <label for="id_disciplina">Nome da disciplina:</label>
-            <select name="id_disciplina" required>
-			<?php foreach ($disciplinas as $disciplina){ ?>
-				<option value="<?= $disciplina['id_disciplina'] ?>"><?= htmlspecialchars($disciplina['nome']) ?></option>
-			<?php } ?>
-		    </select>
-            <hr>
 
+            <label for="id_disciplina">Nome da disciplina:</label>
+            <?php if ($isUpdating): ?>
+                <input type="text" value="<?php echo $nomeDisciplinaAtual; ?>" readonly required>
+                <input type="hidden" name="id_disciplina" value="<?php echo htmlspecialchars(isset($conteudoData['Disciplina_id_disciplina']) ? $conteudoData['Disciplina_id_disciplina'] : ''); ?>">
+                <hr>
+            <?php else: ?>
+                <select name="id_disciplina" required>
+                    <option value="">Selecione um nome de disciplina</option>
+                    <?php foreach ($disciplinas as $disciplina): ?>
+                        <option value="<?= $disciplina['id_disciplina'] ?>"><?= htmlspecialchars($disciplina['nome']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <hr>
+            <?php endif; ?>
 
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>

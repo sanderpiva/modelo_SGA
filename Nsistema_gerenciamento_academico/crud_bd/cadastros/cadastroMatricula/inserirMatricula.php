@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = $e->getMessage();
         echo "<p>Erro ao realizar a matrícula: " . htmlspecialchars($erro) . "</p>";
 
-        // Verifica se o erro é de chave estrangeira
         if (strpos($erro, 'foreign key constraint fails') !== false) {
             echo "<p style='color: red;'>Erro: Problema com vínculos de chave estrangeira. Verifique se a matrícula do aluno e o ID da disciplina existem.</p>";
         } elseif (strpos($erro, "Column count doesn't match value count") !== false) {

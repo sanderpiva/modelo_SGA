@@ -1,4 +1,3 @@
-
 /* Estilos para o container do formulário de login do professor */
 .form_container {
     background-color: white; /* Fundo branco para o formulário */
@@ -85,6 +84,7 @@ footer {
     max-width: 100%;
     width: 100%;
 }
+
 
 hr {
     border: 1px solid #eee;

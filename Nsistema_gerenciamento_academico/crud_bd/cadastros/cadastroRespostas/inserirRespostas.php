@@ -34,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = $e->getMessage();
         echo "<p>Erro ao inserir dados: " . htmlspecialchars($erro) . "</p>";
 
-        // Verifica se o erro é de chave estrangeira (código do erro pode variar dependendo do SGBD)
         if (strpos($erro, 'foreign key constraint fails') !== false) {
             echo "<p style='color: red;'>Erro: Problema com vínculos de chave estrangeira. Verifique se os IDs de questão, prova, disciplina e professor existem.</p>";
         } elseif (strpos($erro, "Column count doesn't match value count") !== false) {

@@ -4,7 +4,7 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
     $id_aluno = $_GET['id_aluno'];
 
     try {
-        // Verificar se existem matrículas para este aluno
+        
         $stmt_check_matricula = $conexao->prepare("SELECT COUNT(*) FROM matricula WHERE Aluno_id_aluno = :id");
         $stmt_check_matricula->bindParam(':id', $id_aluno, PDO::PARAM_INT);
         $stmt_check_matricula->execute();
@@ -14,7 +14,7 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
             echo "<p style='color: red;'>Não é possível excluir este aluno pois ele está matriculado em uma ou mais disciplinas. Por favor, remova as matrículas deste aluno antes de excluí-lo.</p>";
             echo '<p><a href="../../consultas/consultaMatricula/consultaMatricula.php">Verificar Matrículas</a></p>';
         } else {
-            // Se não houver matrículas, prosseguir com a exclusão do aluno
+            
             $stmt_delete_aluno = $conexao->prepare("DELETE FROM aluno WHERE id_aluno = :id");
             $stmt_delete_aluno->bindParam(':id', $id_aluno, PDO::PARAM_INT);
 

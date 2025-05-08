@@ -51,14 +51,12 @@
 
     <script>
         function atualizarTurma(id_turma) {
-            // Redireciona para o formulário de edição da turma
             window.location.href = "../../cadastros/cadastroTurma/formTurma.php?id_turma=" + id_turma;
         }
 
         function excluirTurma(id_turma) {
             const confirmar = confirm("Tem certeza que deseja excluir a turma com ID: " + id_turma + "?");
             if (confirmar) {
-                // Redireciona para o script de exclusão da turma
                 window.location.href = "excluirTurma.php?id_turma=" + id_turma;
             }
         }

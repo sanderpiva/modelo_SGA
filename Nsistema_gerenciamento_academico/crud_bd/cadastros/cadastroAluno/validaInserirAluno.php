@@ -9,7 +9,8 @@ if (
     empty($_POST["data_nascimento"]) ||
     empty($_POST["enderecoAluno"]) ||
     empty($_POST["cidadeAluno"]) ||
-    empty($_POST["telefoneAluno"])
+    empty($_POST["telefoneAluno"])||
+    empty($_POST["id_turma"])
 ) {
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
@@ -39,7 +40,7 @@ if (strlen($_POST["telefoneAluno"]) < 10 || strlen($_POST["telefoneAluno"]) > 25
 }
 
 if (!empty($erros)) {
-    // Mostra os erros diretamente nesta página
+    
     echo "<!DOCTYPE html>
     <html>
     <head>
@@ -58,7 +59,6 @@ if (!empty($erros)) {
     </html>";
     exit;
 } else {
-    // Nenhum erro: continua para inserção
     echo '<form action="inserirAluno.php" method="POST" name="form_inserir">';
     foreach ($_POST as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">';

@@ -14,7 +14,6 @@ $codigoProvaAtual = '';
 $nomeDisciplinaAtual = '';
 $registroProfessorAtual = '';
 
-// Verifica se um ID de resposta foi passado na URL (modo de atualização)
 if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
     $isUpdating = true;
     $idRespostaToUpdate = filter_input(INPUT_GET, 'id_resposta', FILTER_SANITIZE_NUMBER_INT);
@@ -31,7 +30,7 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
             $errors = "<p style='color:red;'>Resposta com ID " . htmlspecialchars($idRespostaToUpdate) . " não encontrada.</p>";
             $isUpdating = false;
         } else {
-            // Buscar informações relacionadas para exibição
+
             $questaoStmt = $conexao->prepare("SELECT descricao FROM questoes WHERE id_questao = :id");
             $questaoStmt->execute([':id' => $respostaData['Questoes_id_questao']]);
             $questao = $questaoStmt->fetch(PDO::FETCH_ASSOC);

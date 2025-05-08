@@ -34,14 +34,13 @@ if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno']) &&
             $errors = "<p style='color:red;'>Registro de matrícula não encontrado para os IDs fornecidos.</p>";
             $isUpdating = false;
         } else {
-            // Buscar nome e matrícula do aluno
+            
             $alunoStmt = $conexao->prepare("SELECT nome, matricula FROM aluno WHERE id_aluno = :id");
             $alunoStmt->execute([':id' => $matriculaData['Aluno_id_aluno']]);
             $alunoInfo = $alunoStmt->fetch(PDO::FETCH_ASSOC);
             $nomeAlunoAtual = htmlspecialchars($alunoInfo['nome'] ?? '');
             $matriculaAlunoAtual = htmlspecialchars($alunoInfo['matricula'] ?? '');
 
-            // Buscar nome da disciplina
             $disciplinaStmt = $conexao->prepare("SELECT nome FROM disciplina WHERE id_disciplina = :id");
             $disciplinaStmt->execute([':id' => $matriculaData['Disciplina_id_disciplina']]);
             $disciplina = $disciplinaStmt->fetch(PDO::FETCH_ASSOC);

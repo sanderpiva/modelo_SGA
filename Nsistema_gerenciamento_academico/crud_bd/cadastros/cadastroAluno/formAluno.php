@@ -2,30 +2,35 @@
 require_once '../conexao.php';
 
 $turmas = $conexao->query("SELECT * FROM turma")->fetchAll(PDO::FETCH_ASSOC);
-	
+
 $isUpdating = false;
 $alunoData = [];
 $errors = "";
+$nomeTurmaAtual = '';
 
 if (isset($_GET['id_aluno'])) {
     $idAlunoToUpdate = $_GET['id_aluno'];
 
-    $stmt = $conexao->prepare("SELECT * FROM aluno WHERE id_aluno = :id");
+    $stmt = $conexao->prepare("SELECT a.*, t.nomeTurma 
+                               FROM aluno a
+                               JOIN turma t ON a.Turma_id_turma = t.id_turma
+                               WHERE a.id_aluno = :id");
     $stmt->execute([':id' => $idAlunoToUpdate]);
-    $alunoData = $stmt->fetch();
+    $alunoData = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$alunoData) {
         $errors = "<p style='color:red;'>Aluno com ID $idAlunoToUpdate não encontrado.</p>";
         $isUpdating = false;
     } else {
         $isUpdating = true;
+        $nomeTurmaAtual = htmlspecialchars($alunoData['nomeTurma']);
     }
-} 
+}
 ?>
 
 
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <title>Página Web - <?php echo $isUpdating ? 'Atualizar' : 'Cadastro'; ?> Aluno</title>
     <meta charset="utf-8">
@@ -40,7 +45,7 @@ if (isset($_GET['id_aluno'])) {
 
             <label for="matricula">Matrícula:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" name="matricula" id="matricula" placeholder="Digite a matrícula" value="<?php echo $isUpdating ? htmlspecialchars($alunoData['matricula']) : ''; ?>" required>
+                <input type="text" name="matricula" id="matricula" placeholder="Digite a matrícula" value="<?php echo htmlspecialchars($alunoData['matricula']); ?>" required readonly>
                 <input type="hidden" name="id_aluno" value="<?php echo htmlspecialchars($alunoData['id_aluno']); ?>">
             <?php else: ?>
                 <input type="text" name="matricula" id="matricula" placeholder="Digite a matrícula" required>
@@ -74,14 +79,21 @@ if (isset($_GET['id_aluno'])) {
             <label for="telefoneAluno">Telefone:</label>
             <input type="text" name="telefoneAluno" id="telefoneAluno" placeholder="Digite o telefone" value="<?php echo $isUpdating ? htmlspecialchars($alunoData['telefone']) : ''; ?>" required>
             <hr>
-            
+
             <label for="id_turma">Nome da turma:</label>
-            <select name="id_turma" required>
-			<?php foreach ($turmas as $turma){ ?>
-				<option value="<?= $turma['id_turma'] ?>"><?= htmlspecialchars($turma['nomeTurma']) ?></option>
-			<?php } ?>
-		    </select>
-            <hr>
+            <?php if ($isUpdating): ?>
+                <input type="text" value="<?php echo $nomeTurmaAtual; ?>" readonly required>
+                <input type="hidden" name="id_turma" value="<?php echo htmlspecialchars($alunoData['Turma_id_turma']); ?>">
+                <hr>
+            <?php else: ?>
+                <select name="id_turma" required>
+                    <option value="">Selecione um nome de turma</option>
+                    <?php foreach ($turmas as $turma): ?>
+                        <option value="<?= $turma['id_turma'] ?>"><?= htmlspecialchars($turma['nomeTurma']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <hr>
+            <?php endif; ?>
 
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>

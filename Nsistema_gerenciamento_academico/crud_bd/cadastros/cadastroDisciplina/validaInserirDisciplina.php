@@ -2,7 +2,6 @@
 $erros = "";
 //var_dump($_POST);
 
-// Verificação de campos obrigatórios
 if (
     empty($_POST["codigoDisciplina"]) ||
     empty($_POST["nomeDisciplina"]) ||
@@ -11,11 +10,11 @@ if (
     empty($_POST["descricaoDisciplina"]) ||
     empty($_POST["semestre_periodo"])||
     empty($_POST["id_professor"]) ||
-    empty($_POST["id_turma"])) {
+    empty($_POST["id_turma"])||
+    empty($_POST["id_professor"])){
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
 
-// Validações individuais
 if (strlen($_POST["codigoDisciplina"]) < 3 || strlen($_POST["codigoDisciplina"]) > 20) {
     $erros .= "Erro: campo 'Código Disciplina' deve ter entre 3 e 20 caracteres.<br>";
 }
@@ -42,7 +41,6 @@ if (strlen($_POST["semestre_periodo"]) < 3 || strlen($_POST["semestre_periodo"])
 
 //Validar IDs? Sao chaves estrangeiras
 
-// Exibe erros ou prossegue com submissão
 if (!empty($erros)) {
     echo "<!DOCTYPE html>
     <html>
@@ -62,7 +60,7 @@ if (!empty($erros)) {
     </html>";
     exit;
 } else {
-    // Sem erros: gera formulário oculto para submissão
+    
     echo '<form action="inserirDisciplina.php" method="POST" name="form_inserir">';
     foreach ($_POST as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">';

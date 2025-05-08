@@ -24,14 +24,14 @@ if (isset($_GET['id_disciplina'])) {
             $isUpdating = false;
         } else {
             $isUpdating = true;
-            // Buscar o registroProfessor do professor associado
+            
             foreach ($professores as $professor) {
                 if ($professor['id_professor'] == $disciplinaData['Professor_id_professor']) {
                     $registroProfessorAtual = $professor['registroProfessor'];
                     break;
                 }
             }
-            // Buscar o nome da turma associada
+            
             foreach ($turmas as $turma) {
                 if ($turma['id_turma'] == $disciplinaData['Turma_id_turma']) {
                     $nomeTurmaAtual = $turma['nomeTurma'];
@@ -96,6 +96,7 @@ if (isset($_GET['id_disciplina'])) {
                 <input type="text" value="<?php echo htmlspecialchars($nomeTurmaAtual); ?>" readonly required>
                 <input type="hidden" name="id_turma" value="<?php echo htmlspecialchars(isset($disciplinaData['Turma_id_turma']) ? $disciplinaData['Turma_id_turma'] : ''); ?>">
                 <hr>
+                
             <?php else: ?>
                 <label for="id_professor">Registro do professor:</label>
                 <select name="id_professor" required>

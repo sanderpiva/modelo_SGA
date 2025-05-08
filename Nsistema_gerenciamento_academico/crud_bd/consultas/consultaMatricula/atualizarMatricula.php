@@ -2,7 +2,7 @@
 require_once '../conexao.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Verifica se todos os campos necessários foram enviados
+    
     if (!isset($_POST['original_id_aluno']) || empty($_POST['original_id_aluno']) ||
         !isset($_POST['original_id_disciplina']) || empty($_POST['original_id_disciplina']) ||
         !isset($_POST['aluno_matricula']) || empty($_POST['aluno_matricula']) ||
@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
-    // Obtém os dados do formulário
     $original_id_aluno = $_POST['original_id_aluno'];
     $original_id_disciplina = $_POST['original_id_disciplina'];
     $modificado_id_aluno = $_POST['aluno_matricula'];

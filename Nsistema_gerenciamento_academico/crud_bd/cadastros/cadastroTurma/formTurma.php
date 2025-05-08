@@ -5,7 +5,6 @@ $isUpdating = false;
 $turmaData = [];
 $errors = "";
 
-// Verifica se um ID de turma foi passado na URL (modo de atualização)
 if (isset($_GET['id_turma']) && !empty($_GET['id_turma'])) {
     $isUpdating = true;
     $idTurmaToUpdate = $_GET['id_turma'];
@@ -16,7 +15,7 @@ if (isset($_GET['id_turma']) && !empty($_GET['id_turma'])) {
 
     if (!$turmaData) {
         $errors = "<p style='color:red;'>Turma com ID " . htmlspecialchars($idTurmaToUpdate) . " não encontrada.</p>";
-        $isUpdating = false; // Volta para o modo de cadastro se houver erro na busca
+        $isUpdating = false; 
     }
 } 
 ?>

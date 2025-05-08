@@ -1,14 +1,14 @@
 <?php
 $erros = "";
-var_dump($_POST);
-// Verificação de campos obrigatórios
+//var_dump($_POST);
+
 if (
     empty($_POST["codigoProva"]) ||
     empty($_POST["tipo_prova"]) ||
     empty($_POST["disciplina"]) ||
     empty($_POST["conteudo"]) ||
     empty($_POST["data_prova"]) ||
-    //empty($_POST["nome_professor"]) ||
+    empty($_POST["nome_professor"]) ||
     empty($_POST["id_disciplina"]) ||
     empty($_POST["id_professor"]) 
     
@@ -16,7 +16,6 @@ if (
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
 
-// Validações individuais
 if (strlen($_POST["codigoProva"]) < 3 || strlen($_POST["codigoProva"]) > 20) {
     $erros .= "Erro: campo 'Código da Prova' deve ter entre 3 e 20 caracteres.<br>";
 }
@@ -33,15 +32,12 @@ if (strlen($_POST["conteudo"]) < 30 || strlen($_POST["conteudo"]) > 300) {
     $erros .= "Erro: campo 'Conteúdo da Prova' deve ter entre 30 e 300 caracteres.<br>";
 }
 
-/*
+
 if (strlen($_POST["nome_professor"]) < 5 || strlen($_POST["nome_professor"]) > 20) {
     $erros .= "Erro: campo 'Professor' deve ter entre 5 e 20 caracteres.<br>";
-}*/
-
-//Validar IDs? Sao chaves estrangeiras
+}
 
 
-// Exibe erros ou prossegue com submissão
 if (!empty($erros)) {
     echo "<!DOCTYPE html>
     <html>
@@ -61,7 +57,7 @@ if (!empty($erros)) {
     </html>";
     exit;
 } else {
-    // Sem erros: gera formulário oculto para submissão
+    
     echo '<form action="inserirProva.php" method="POST" name="form_inserir">';
     foreach ($_POST as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">';

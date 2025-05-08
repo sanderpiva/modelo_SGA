@@ -2,7 +2,7 @@
 $erros = "";
 
 //var_dump($_POST);
-// Verificação de campos obrigatórios
+
 if (
     empty($_POST["codigoQuestaoProva"]) ||
     empty($_POST["descricao_questao"]) ||
@@ -14,7 +14,6 @@ if (
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
 
-// Validações individuais
 if (strlen($_POST["codigoQuestaoProva"]) < 3 || strlen($_POST["codigoQuestaoProva"]) > 20) {
     $erros .= "Erro: campo 'Código da Questão' deve ter entre 3 e 20 caracteres.<br>";
 }
@@ -29,7 +28,6 @@ if (strlen($_POST["tipo_prova"]) < 5 || strlen($_POST["tipo_prova"]) > 20) {
 
 //Validar IDs? Sao chaves estrangeiras!
 
-// Exibe erros ou prossegue com submissão
 if (!empty($erros)) {
     echo "<!DOCTYPE html>
     <html>
@@ -49,7 +47,7 @@ if (!empty($erros)) {
     </html>";
     exit;
 } else {
-    // Sem erros: gera formulário oculto para submissão
+    
     echo '<form action="inserirQuestaoProva.php" method="POST" name="form_inserir">';
     foreach ($_POST as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">';

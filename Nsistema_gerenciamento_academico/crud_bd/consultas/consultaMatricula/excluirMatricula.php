@@ -1,12 +1,11 @@
-
 <?php
 require_once "../conexao.php";
-// Matricula vai ter um ID soh dela? Eh tabela intermediaria!
-if (isset($_GET['codigoMatricula']) && !empty($_GET['codigoMatricula'])) {
-    $codigoMatriculaExcluir = $_GET['codigoMatricula'];
 
-    $stmt = $conexao->prepare("DELETE FROM matricula WHERE aluno_matricula = :codigo");
-    $stmt->bindParam(':codigo', $codigoMatriculaExcluir, PDO::PARAM_STR); // Assumindo que codigoMatricula é string
+if (isset($_GET['id_aluno']) && !empty($_GET['id_aluno'])) {
+    $alunoIdExcluir = $_GET['id_aluno'];
+
+    $stmt = $conexao->prepare("DELETE FROM matricula WHERE Aluno_id_aluno = :id");
+    $stmt->bindParam(':id', $alunoIdExcluir, PDO::PARAM_INT); // Assumindo que Aluno_id_aluno é INT
 
     try {
         if ($stmt->execute()) {
@@ -31,7 +30,7 @@ if (isset($_GET['codigoMatricula']) && !empty($_GET['codigoMatricula'])) {
         }
     }
 } else {
-    header("Location: consultaMatricula.php?excluido=codigo_invalido");
+    header("Location: consultaMatricula.php?excluido=id_aluno_invalido");
     exit;
 }
 ?>

@@ -1,7 +1,6 @@
 <?php
 $erros = "";
 
-// Verificação de campos obrigatórios
 //var_dump($_POST);
 if (
     empty($_POST["codigoRespostas"]) ||
@@ -17,7 +16,6 @@ if (
 // se for 0 o sistema entende como false e sempre da erro
 // por isso nao fiz uma validação individual para esses campos
 
-// Validações individuais parcialmente implementadas
 if (strlen($_POST["codigoRespostas"]) < 3 || strlen($_POST["codigoRespostas"]) > 20) {
     $erros .= "Erro: campo 'Código da Resposta' deve ter entre 3 e 20 caracteres.<br>";
 }
@@ -28,7 +26,6 @@ if (strlen($_POST["respostaDada"]) != 1 || !preg_match('/^[a-zA-Z]$/', $_POST["r
 
 //Como validar os IDs que sao chaves estrangeiras?
 
-// Exibe erros ou prossegue com submissão
 if (!empty($erros)) {
     echo "<!DOCTYPE html>
     <html>

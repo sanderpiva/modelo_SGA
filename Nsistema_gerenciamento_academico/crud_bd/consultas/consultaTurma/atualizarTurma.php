@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_turma'])) {
         $pathToForm = '../../cadastros/cadastroTurma/formTurma.php';
 
         header("Location: " . $pathToForm . "?id_turma=" . urlencode($_POST['id_turma']) . "&erros=" . urlencode($error));
-        exit(); // Garante que o script pare após o redirecionamento
+        exit(); 
     }
 
 } else {

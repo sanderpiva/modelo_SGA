@@ -5,7 +5,6 @@ $isUpdating = false;
 $professorData = [];
 $errors = "";
 
-// Verifica se um ID de professor foi passado na URL (modo de atualização)
 if (isset($_GET['id_professor']) && !empty($_GET['id_professor'])) {
     $isUpdating = true;
     $idProfessorToUpdate = $_GET['id_professor'];

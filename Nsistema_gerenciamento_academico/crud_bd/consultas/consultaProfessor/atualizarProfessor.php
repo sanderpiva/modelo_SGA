@@ -1,5 +1,5 @@
 <?php
-require_once '../conexao.php'; // Inclui o arquivo de conexão
+require_once '../conexao.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_professor'])) {
 

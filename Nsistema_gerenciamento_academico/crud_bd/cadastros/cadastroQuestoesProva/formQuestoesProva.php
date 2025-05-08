@@ -12,7 +12,6 @@ $nomeDisciplinaAtual = '';
 $registroProfessorAtual = '';
 $nomeProvaAtual = '';
 
-// Verifica se um ID de questão foi passado na URL (modo de atualização)
 if (isset($_GET['id_questaoProva']) && !empty($_GET['id_questaoProva'])) {
     $isUpdating = true;
     $idQuestaoToUpdate = filter_input(INPUT_GET, 'id_questaoProva', FILTER_SANITIZE_NUMBER_INT);
@@ -29,7 +28,7 @@ if (isset($_GET['id_questaoProva']) && !empty($_GET['id_questaoProva'])) {
             $errors = "<p style='color:red;'>Questão com ID " . htmlspecialchars($idQuestaoToUpdate) . " não encontrada.</p>";
             $isUpdating = false;
         } else {
-            // Buscar nome da disciplina, registro do professor e nome da prova associados
+
             foreach ($disciplinas as $disciplina) {
                 if ($disciplina['id_disciplina'] == $questaoProvaData['Prova_Disciplina_id_disciplina']) {
                     $nomeDisciplinaAtual = $disciplina['nome'];

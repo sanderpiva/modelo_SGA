@@ -76,14 +76,12 @@
 
     <script>
         function atualizarQuestaoProva(id_questaoProva) {
-            // Redireciona para o formulário de edição da questão prova
             window.location.href = "../../cadastros/cadastroQuestoesProva/formQuestoesProva.php?id_questaoProva=" + id_questaoProva;
         }
 
         function excluirQuestaoProva(id_questaoProva) {
             const confirmar = confirm("Tem certeza que deseja excluir a questão da prova com ID: " + id_questaoProva + "?");
             if (confirmar) {
-                // Redireciona para o script de exclusão da questão prova
                 window.location.href = "excluirQuestoesProva.php?id_questaoProva=" + id_questaoProva;
             }
         }

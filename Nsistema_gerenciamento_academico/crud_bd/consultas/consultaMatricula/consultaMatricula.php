@@ -52,7 +52,7 @@
                         echo "<td>$nome_disciplina</td>";
                         echo "<td id='buttons-wrapper'>";
                         echo "<button onclick='atualizarMatricula(\"$id_aluno\", \"$id_disciplina\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";
-                        echo "<button onclick='exclusaoEmDesenvolvimento()'><i class='fa-solid fa-trash'></i> Excluir</button>";
+                        echo "<button onclick='exclusaoEmDesenvolvimento(\"$id_aluno\")'><i class='fa-solid fa-trash'></i> Excluir</button>";
                         echo "</td>";
                         echo "</tr>";
                     }
@@ -74,10 +74,11 @@
             window.location.href = "../../cadastros/cadastroMatricula/formMatricula.php?id_aluno=" + encodeURIComponent(id_aluno) + "&id_disciplina=" + encodeURIComponent(id_disciplina);
         }
 
-        function exclusaoEmDesenvolvimento() {
-            alert("A funcionalidade de exclusão de matrículas ainda está em desenvolvimento.");
-            // No futuro, aqui você implementaria a lógica para excluir a matrícula
-            // (redirecionamento para um script de exclusão, por exemplo).
+        function exclusaoEmDesenvolvimento(id_aluno) {
+            const confirmar = confirm("Tem certeza que deseja excluir todas as matrículas do aluno com ID: " + id_aluno + "?");
+            if (confirmar) {
+                window.location.href = "excluirMatricula.php?id_aluno=" + encodeURIComponent(id_aluno);
+            }
         }
     </script>
 </body>

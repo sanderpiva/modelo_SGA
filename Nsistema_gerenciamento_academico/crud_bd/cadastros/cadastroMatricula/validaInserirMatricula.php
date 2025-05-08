@@ -1,8 +1,8 @@
 <?php
 
 $erros = "";
-var_dump($_POST);
-// Verificação de campos obrigatórios
+//var_dump($_POST);
+
 if (
     empty($_POST["aluno_id"])||
     empty($_POST["disciplina_id"])
@@ -11,7 +11,6 @@ if (
 }
 
 
-// Exibe erros ou prossegue com submissão
 if (!empty($erros)) {
     echo "<!DOCTYPE html>
     <html>
@@ -31,7 +30,7 @@ if (!empty($erros)) {
     </html>";
     exit;
 } else {
-    // Sem erros: gera formulário oculto para submissão
+    
     echo '<form action="inserirMatricula.php" method="POST" name="form_inserir">';
     foreach ($_POST as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">';

@@ -8,7 +8,8 @@ if (
     empty($_POST["data_postagem"]) ||
     empty($_POST["professor"]) ||
     empty($_POST["disciplina"]) ||
-    empty($_POST["tipo_conteudo"])
+    empty($_POST["tipo_conteudo"])||
+    empty($_POST["id_disciplina"])
 ) {
     $erros .= "Todos os campos devem ser preenchidos.<br>";
 }
@@ -37,10 +38,9 @@ if (strlen($_POST["tipo_conteudo"]) < 5 || strlen($_POST["tipo_conteudo"]) > 20)
     $erros .= "Erro: campo 'Tipo de Conteúdo' deve ter entre 5 e 20 caracteres.<br>";
 }           
 
-//Validar ID da disciplina?
 
 if (!empty($erros)) {
-    // Exibe os erros diretamente na tela
+    
     echo "<!DOCTYPE html>
     <html>
     <head>
@@ -59,7 +59,7 @@ if (!empty($erros)) {
     </html>";
     exit;
 } else {
-    // Nenhum erro: continua para inserção
+    
     echo '<form action="inserirConteudo.php" method="POST" name="form_inserir">';
     foreach ($_POST as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">';
