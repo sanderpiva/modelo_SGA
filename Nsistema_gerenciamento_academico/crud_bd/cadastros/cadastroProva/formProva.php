@@ -1,14 +1,14 @@
 <?php
 require_once '../conexao.php';
 
-$professores = $conexao->query("SELECT id_professor, registroProfessor, nome FROM professor")->fetchAll(PDO::FETCH_ASSOC);
-$disciplinas = $conexao->query("SELECT id_disciplina, nome FROM disciplina")->fetchAll(PDO::FETCH_ASSOC);
+$professores = $conexao->query("SELECT * FROM professor")->fetchAll(PDO::FETCH_ASSOC);
+$disciplinas = $conexao->query("SELECT * FROM disciplina")->fetchAll(PDO::FETCH_ASSOC);
 
 $isUpdating = false;
 $provaData = [];
 $errors = "";
 $nomeProfessorAtual = '';
-$nomeDisciplinaAtual = '';
+$codigoDisciplinaAtual = '';
 
 if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
     $isUpdating = true;
@@ -36,7 +36,7 @@ if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
             
             foreach ($disciplinas as $disciplina) {
                 if ($disciplina['id_disciplina'] == $provaData['Disciplina_id_disciplina']) {
-                    $nomeDisciplinaAtual = $disciplina['nome'];
+                    $codigoDisciplinaAtual = $disciplina['nome'];
                     break;
                 }
             }
@@ -88,15 +88,15 @@ if (isset($_GET['id_prova']) && !empty($_GET['id_prova'])) {
             <input type="text" name="nome_professor" id="nome_professor" placeholder="Digite nome professor" value="<?php echo htmlspecialchars($provaData['professor'] ?? ''); ?>" required>
             <hr>
 
-            <label for="id_disciplina">Nome disciplina:</label>
+            <label for="id_disciplina">Código disciplina:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?php echo htmlspecialchars($nomeDisciplinaAtual); ?>" readonly required>
+                <input type="text" value="<?php echo htmlspecialchars($codigoDisciplinaAtual); ?>" readonly required>
                 <input type="hidden" name="id_disciplina" value="<?php echo htmlspecialchars($provaData['Disciplina_id_disciplina'] ?? ''); ?>">
             <?php else: ?>
                 <select name="id_disciplina" required>
-                    <option value="">Selecione uma disciplina</option>
+                    <option value="">Selecione codigo disciplina</option>
                     <?php foreach ($disciplinas as $disciplina): ?>
-                        <option value="<?= $disciplina['id_disciplina'] ?>"><?= htmlspecialchars($disciplina['nome']) ?></option>
+                        <option value="<?= $disciplina['id_disciplina'] ?>"><?= htmlspecialchars($disciplina['codigoDisciplina']) ?></option>
                     <?php endforeach; ?>
                 </select>
             <?php endif; ?>

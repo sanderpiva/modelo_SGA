@@ -15,13 +15,13 @@
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
-                <th>Código</th>
+                <th>Código de prova</th>
                 <th>Tipo</th>
-                <th>Disciplina (Digitado)</th>
+                <th>Disciplina</th>
                 <th>Conteúdo</th>
                 <th>Data</th>
-                <th>Professor (Digitado)</th>
-                <th>Nome da Disciplina</th>
+                <th>Professor</th>
+                <th>Código da Disciplina</th>
                 <th>Registro do Professor</th>
                 <th>Ações</th>
             </tr>
@@ -40,7 +40,7 @@
                         p.conteudo,
                         p.data_prova,
                         p.professor AS professor_digitado,
-                        d.nome AS nome_disciplina,
+                        d.codigoDisciplina AS codigo_disciplina,
                         prof.registroProfessor AS registro_professor
                     FROM
                         prova p
@@ -60,7 +60,7 @@
                     echo "<td>" . htmlspecialchars($prova['conteudo']) . "</td>";
                     echo "<td>" . htmlspecialchars($prova['data_prova']) . "</td>";
                     echo "<td>" . htmlspecialchars($prova['professor_digitado']) . "</td>";
-                    echo "<td>" . htmlspecialchars($prova['nome_disciplina']) . "</td>";
+                    echo "<td>" . htmlspecialchars($prova['codigo_disciplina']) . "</td>";
                     echo "<td>" . htmlspecialchars($prova['registro_professor']) . "</td>";
                     echo "<td id='buttons-wrapper'>";
                     echo "<button onclick='atualizarProva(\"$id_prova\")'><i class='fa-solid fa-pen'></i> Atualizar</button>";

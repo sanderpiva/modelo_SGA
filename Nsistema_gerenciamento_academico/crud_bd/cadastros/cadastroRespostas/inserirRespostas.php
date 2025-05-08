@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<p>Erro ao inserir dados: " . htmlspecialchars($erro) . "</p>";
 
         if (strpos($erro, 'foreign key constraint fails') !== false) {
-            echo "<p style='color: red;'>Erro: Problema com vínculos de chave estrangeira. Verifique se os IDs de questão, prova, disciplina e professor existem.</p>";
+            echo "<p style='color: red;'>Erro: Problema com vínculos de chave estrangeira. Verifique se a COMBINAÇÃO dos IDs de questão ($id_questao), prova ($id_prova), disciplina ($id_disciplina) e professor ($id_professor) EXISTE na tabela `Questoes`.</p>";
         } elseif (strpos($erro, "Column count doesn't match value count") !== false) {
             echo "<p style='color: orange;'>Erro: Insira primeiro os dados de questão de prova e prova.</p>";
         }

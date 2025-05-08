@@ -1,7 +1,7 @@
 <?php
 $erros = "";
 
-//var_dump($_POST);
+var_dump($_POST);
 if (
     empty($_POST["codigoRespostas"]) ||
     empty($_POST["respostaDada"]) ||

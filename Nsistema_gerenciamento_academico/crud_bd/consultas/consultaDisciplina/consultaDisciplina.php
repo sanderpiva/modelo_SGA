@@ -15,7 +15,7 @@
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
-                <th>Código</th>
+                <th>Código disciplina</th>
                 <th>Nome</th>
                 <th>Carga Horária</th>
                 <th>Professor (ID)</th>

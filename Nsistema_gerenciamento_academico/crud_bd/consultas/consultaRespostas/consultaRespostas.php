@@ -64,7 +64,7 @@
 
                 ");
                 $respostas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                echo count($respostas);
+                //echo count($respostas);
                 foreach ($respostas as $resposta) {
                     //var_dump($resposta);
                     $id_resposta = htmlspecialchars($resposta['id_respostas']);
