@@ -35,33 +35,24 @@
 
             try {
                 $stmt = $conexao->query("
-                    SELECT
-                        a.nome AS nome_aluno,  -- Nome do aluno
-                        r.id_respostas,        -- ID da resposta
-                        r.codigoRespostas,      -- Código da resposta
-                        r.respostaDada,        -- Resposta dada pelo aluno
-                        r.acertou,             -- Se a resposta está correta (booleano)
-                        r.nota,                -- Nota da resposta
-                        q.descricao AS descricao_questao, -- Descrição da questão
-                        p.codigoProva AS codigo_prova,   -- Código da prova
-                        d.nome AS nome_disciplina, -- Nome da disciplina
-                        prof.nome AS nome_professor -- Nome do professor
-                    FROM
-                        aluno a                -- Começa pela tabela de alunos para garantir que todos sejam listados
-                    JOIN                -- Usa LEFT JOIN para incluir todos os alunos, mesmo sem respostas
-                        matricula m ON a.id_aluno = m.Aluno_id_aluno
-                    JOIN                -- Une com a tabela de provas
-                        prova p ON m.Disciplina_id_disciplina = p.Disciplina_id_disciplina
-                    JOIN                -- Une com a tabela de respostas
-                        respostas r ON p.id_prova = r.Questoes_Prova_id_prova
-                    JOIN                -- Une com a tabela de questões
-                        questoes q ON r.Questoes_id_questao = q.id_questao
-                    JOIN                -- Une com a tabela de disciplinas
-                        disciplina d ON r.Questoes_Prova_Disciplina_id_disciplina = d.id_disciplina
-                    JOIN                -- Une com a tabela de professores
-                        professor prof ON r.Questoes_Prova_Disciplina_Professor_id_professor = prof.id_professor
-                    ORDER BY a.nome;        -- Ordena os resultados pelo nome do aluno
-
+                SELECT
+                    a.nome AS nome_aluno,
+                    r.id_respostas,
+                    r.codigoRespostas,
+                    r.respostaDada,
+                    r.acertou,
+                    r.nota,
+                    q.descricao AS descricao_questao,
+                    p.codigoProva AS codigo_prova,
+                    d.nome AS nome_disciplina,
+                    prof.nome AS nome_professor
+                FROM respostas r
+                JOIN aluno a ON r.Aluno_id_aluno = a.id_aluno
+                JOIN questoes q ON r.Questoes_id_questao = q.id_questao
+                JOIN prova p ON r.Questoes_Prova_id_prova = p.id_prova
+                JOIN disciplina d ON r.Questoes_Prova_Disciplina_id_disciplina = d.id_disciplina
+                JOIN professor prof ON r.Questoes_Prova_Disciplina_Professor_id_professor = prof.id_professor
+                ORDER BY a.nome;
                 ");
                 $respostas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 //echo count($respostas);

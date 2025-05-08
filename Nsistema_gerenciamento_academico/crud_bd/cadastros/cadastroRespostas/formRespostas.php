@@ -5,6 +5,7 @@ $disciplinas = $conexao->query("SELECT * FROM disciplina")->fetchAll(PDO::FETCH_
 $professores = $conexao->query("SELECT * FROM professor")->fetchAll(PDO::FETCH_ASSOC);
 $provas = $conexao->query("SELECT * FROM prova")->fetchAll(PDO::FETCH_ASSOC);
 $questoes = $conexao->query("SELECT * FROM questoes")->fetchAll(PDO::FETCH_ASSOC);
+$alunos = $conexao->query("SELECT * FROM aluno")->fetchAll(PDO::FETCH_ASSOC);   
 
 $isUpdating = false;
 $respostaData = [];
@@ -152,6 +153,19 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
             <?php endif; ?>
             <hr>
 
+            <label for="id_aluno">Aluno:</label>
+            <?php if ($isUpdating): ?>
+                <input type="text" value="<?php echo htmlspecialchars($respostaData['Aluno_id_aluno'] ?? ''); ?>" readonly required>
+                <input type="hidden" name="id_aluno" value="<?php echo htmlspecialchars($respostaData['Aluno_id_aluno'] ?? ''); ?>">
+            <?php else: ?>
+                <select name="id_aluno" id="id_aluno" required>
+                    <option value="">Selecione um aluno</option>
+                    <?php foreach ($alunos as $aluno): ?>
+                        <option value="<?= htmlspecialchars($aluno['id_aluno']) ?>"><?= htmlspecialchars($aluno['nome']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+
             <button type="submit"><?php echo $isUpdating ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>
 
@@ -165,3 +179,6 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
     <p>Desenvolvido por Juliana e Sander</p>
 </footer>
 </html>
+
+
+

@@ -11,10 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_prova = $_POST["id_prova"];
     $id_disciplina = $_POST["id_disciplina"];
     $id_professor = $_POST["id_professor"];
+    $id_aluno = $_POST["id_aluno"];
 
     try {
-        $sql = "INSERT INTO respostas (codigoRespostas, respostaDada, acertou, nota, Questoes_id_questao, Questoes_Prova_id_prova, Questoes_Prova_Disciplina_id_disciplina, Questoes_Prova_Disciplina_Professor_id_professor)
-                VALUES (:codigoRespostas, :respostaDada, :acertou, :nota, :id_questao, :id_prova, :id_disciplina, :id_professor)";
+        $sql = "INSERT INTO respostas (codigoRespostas, respostaDada, acertou, nota, Questoes_id_questao, Questoes_Prova_id_prova, Questoes_Prova_Disciplina_id_disciplina, Questoes_Prova_Disciplina_Professor_id_professor, Aluno_id_aluno )
+                VALUES (:codigoRespostas, :respostaDada, :acertou, :nota, :id_questao, :id_prova, :id_disciplina, :id_professor, :id_aluno)";
         $stmt = $conexao->prepare($sql);
         $stmt->execute([
             ':codigoRespostas' => $codigoRespostas,
@@ -24,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':id_questao' => $id_questao,
             ':id_prova' => $id_prova,
             ':id_disciplina' => $id_disciplina,
-            ':id_professor' => $id_professor
+            ':id_professor' => $id_professor,
+            ':id_aluno' => $id_aluno
         ]);
 
         echo "<p>Dados inseridos com sucesso!</p>";
