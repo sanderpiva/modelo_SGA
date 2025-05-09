@@ -16,8 +16,8 @@
     
     </div>
     <div class="btn_home"><br>
-        <button  class="buttonInicioProfessor" onclick="window.location.href='login/menuProfessor.html'">PROFESSOR</button>
-        <button  class="buttonInicioAluno" onclick="window.location.href='login/menuAluno.html'">ALUNO</button>
+        <button  class="buttonInicioProfessor" onclick="window.location.href='login/menu-professor.html'">PROFESSOR</button>
+        <button  class="buttonInicioAluno" onclick="window.location.href='login/menu-aluno.html'">ALUNO</button>
         
     </div><br><br> 
 </body>
