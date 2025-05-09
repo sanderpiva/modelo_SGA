@@ -1,7 +1,6 @@
 <html>
 <head>
     <?php
-    // Sempre inicie a sessão no topo de qualquer página PHP que a utilize
     session_start();
     ?>
     <title>Atividades Dinamicas</title>
@@ -11,30 +10,22 @@
 <body class="servicos_forms">
 
 <?php
-    // Verifica se o formulário foi submetido via método POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // Verifica se 'turma' e 'disciplina' foram enviados e não estão vazios
         if (isset($_POST['turma']) && !empty($_POST['turma']) &&
             isset($_POST['disciplina']) && !empty($_POST['disciplina'])) {
 
-            // Atribui os valores postados a variáveis
             $turma = $_POST['turma'];
             $disciplina = $_POST['disciplina'];
 
-            // Armazena os valores na sessão
             $_SESSION['turma_selecionada'] = $turma;
             $_SESSION['disciplina_selecionada'] = $disciplina;
 
-            // Redireciona o usuário para a página de destino
-            // Certifique-se de que não há NENHUM output (echo, HTML, etc.) antes desta linha
             header("Location: ../servicos_professor/dashboard_alunos_dinamico.php");
 
-            // Garante que o script pare de executar após o redirecionamento
             exit();
 
         } else {
-            // Mensagem de erro caso turma ou disciplina não tenham sido selecionadas/enviadas corretamente
             echo "<p style='color:red;'>Por favor, selecione uma opção para turma e disciplina.</p>";
         }
     }

@@ -10,7 +10,7 @@ $alunos = $conexao->query("SELECT * FROM aluno")->fetchAll(PDO::FETCH_ASSOC);
 $isUpdating = false;
 $respostaData = [];
 $errors = "";
-$nomeQuestaoAtual = '';
+$descricaoQuestaoAtual = '';
 $codigoProvaAtual = '';
 $nomeDisciplinaAtual = '';
 $registroProfessorAtual = '';
@@ -35,7 +35,7 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
             $questaoStmt = $conexao->prepare("SELECT descricao FROM questoes WHERE id_questao = :id");
             $questaoStmt->execute([':id' => $respostaData['Questoes_id_questao']]);
             $questao = $questaoStmt->fetch(PDO::FETCH_ASSOC);
-            $nomeQuestaoAtual = htmlspecialchars($questao['descricao'] ?? '');
+            $descricaoQuestaoAtual = htmlspecialchars($questao['descricao'] ?? '');
 
             $provaStmt = $conexao->prepare("SELECT codigoProva FROM prova WHERE id_prova = :id");
             $provaStmt->execute([':id' => $respostaData['Questoes_Prova_id_prova']]);
@@ -51,6 +51,11 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
             $professorStmt->execute([':id' => $respostaData['Questoes_Prova_Disciplina_Professor_id_professor']]);
             $professor = $professorStmt->fetch(PDO::FETCH_ASSOC);
             $registroProfessorAtual = htmlspecialchars($professor['registroProfessor'] ?? '');
+        
+            $alunoStmt = $conexao->prepare("SELECT nome FROM aluno WHERE id_aluno = :id");
+            $alunoStmt->execute([':id' => $respostaData['Aluno_id_aluno']]);
+            $aluno = $alunoStmt->fetch(PDO::FETCH_ASSOC);
+            $nomeAlunoAtual = htmlspecialchars($aluno['nome'] ?? '');
         }
     }
 }
@@ -99,7 +104,7 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
 
             <label for="id_questao">Descrição da Questão:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?php echo $nomeQuestaoAtual; ?>" readonly required>
+                <input type="text" value="<?php echo $descricaoQuestaoAtual; ?>" readonly required>
                 <input type="hidden" name="id_questao" value="<?php echo htmlspecialchars($respostaData['Questoes_id_questao'] ?? ''); ?>">
             <?php else: ?>
                 <select name="id_questao" id="id_questao" required>
@@ -111,7 +116,7 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
             <?php endif; ?>
             <hr>
 
-            <label for="id_prova">Prova:</label>
+            <label for="id_prova">Código Prova:</label>
             <?php if ($isUpdating): ?>
                 <input type="text" value="<?php echo $codigoProvaAtual; ?>" readonly required>
                 <input type="hidden" name="id_prova" value="<?php echo htmlspecialchars($respostaData['Questoes_Prova_id_prova'] ?? ''); ?>">
@@ -155,7 +160,7 @@ if (isset($_GET['id_resposta']) && !empty($_GET['id_resposta'])) {
 
             <label for="id_aluno">Aluno:</label>
             <?php if ($isUpdating): ?>
-                <input type="text" value="<?php echo htmlspecialchars($respostaData['Aluno_id_aluno'] ?? ''); ?>" readonly required>
+                <input type="text" value="<?php echo $nomeAlunoAtual; ?>" readonly required>
                 <input type="hidden" name="id_aluno" value="<?php echo htmlspecialchars($respostaData['Aluno_id_aluno'] ?? ''); ?>">
             <?php else: ?>
                 <select name="id_aluno" id="id_aluno" required>
